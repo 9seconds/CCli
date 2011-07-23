@@ -2,14 +2,13 @@ package org.aerialsounds.nanocli.valueparsers;
 
 
 
-
-final class StringParser
+final class NoneParser
     implements ValueParser {
 
 
     @Override
     public Object parse (String value) {
-        return value;
+        return null;
     }
 
 }
