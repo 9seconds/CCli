@@ -15,7 +15,7 @@ public class CliParser {
     
     private boolean parsed = false;
     
-    private Map<optionTypes,Map<String,Option>> options = new TreeMap<optionTypes,Map<String,Option>>();
+    private Map<OptionTypes,Map<String,Option>> options = new TreeMap<OptionTypes,Map<String,Option>>();
     
     public CliParser(String[] args) {
         this(args, DEFAULT_OPTION_SIGN);
@@ -26,8 +26,8 @@ public class CliParser {
         OPTION_SIGN = optionSign;
     }
     
-    public Option createOption(String name, optionTypes type) {
-        registerType(type);
+    public Option createOption(OptionTypes optionType, ValueTypes valueType, String name, String help) {
+        registerType(optionType);
         return null;
     }
     
@@ -45,7 +45,7 @@ public class CliParser {
         return null;
     }
     
-    public Option getOption(String name, optionTypes type) {
+    public Option getOption(String name, OptionTypes type) {
         Map<String,Option> container = options.get(type);
         return ( container != null )
             ? container.get(name)
@@ -62,7 +62,7 @@ public class CliParser {
         }
     }
     
-    private void registerType(optionTypes type) {
+    private void registerType(OptionTypes type) {
         if ( options.containsKey(type) )
             options.put(type, new TreeMap<String,Option>());
     }
