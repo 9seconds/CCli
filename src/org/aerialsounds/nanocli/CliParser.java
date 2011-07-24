@@ -18,6 +18,7 @@ public class CliParser implements Observer {
 
     final protected String[] args;
     final protected String OPTION_SIGN;
+    final protected CliFactory factory;
     
     final static public String DEFAULT_OPTION_SIGN = "-";
     
@@ -33,27 +34,38 @@ public class CliParser implements Observer {
     public CliParser(String[] args, String optionSign) {
         this.args = args;
         OPTION_SIGN = optionSign;
+        factory = new CliFactory(this);
     }
     
     public Option createOption(OptionTypes optionType, ValueTypes valueType, Object defaultValue, String name, String help) throws HaveSuchName {
         if ( !hasOption(name) ) {
             registerType(optionType);
-            
-            DataContainer container = new DataContainer(this);
-            container.setDefaultValue(defaultValue);
-            container.setValueType(valueType);
-            container.setHelp(help);
-            containers.put(container, new HashSet<GenericOption>());
-            
-            // TODO: create options and add it to set
-            
-            return null;
+            DataContainer container = createAndRegisterContainer(defaultValue, valueType, help);
+            return createAndRegisterOption(container, optionType, name);
         }
         else
             throw new HaveSuchName();
 
     }
     
+    private GenericOption createAndRegisterOption (DataContainer container, OptionTypes optionType, String name) {
+        GenericOption opt = factory.createOption(optionType, name);
+
+        opt.setContainer(container);
+        containers.get(container).add(opt);
+        opt.addObserver(this);
+        
+        return opt;
+    }
+
+    private DataContainer createAndRegisterContainer (Object defaultValue, ValueTypes valueType, String help) {
+        DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
+
+        containers.put(container, new HashSet<GenericOption>());
+        
+        return container;
+    }
+
     public boolean hasOption(String name) {
         Iterator<Map<String,Option>> values = options.values().iterator();
         while ( values.hasNext() ) {
