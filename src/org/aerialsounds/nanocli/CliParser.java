@@ -11,6 +11,7 @@ import java.util.TreeMap;
 
 import org.aerialsounds.nanocli.datacontainer.DataContainer;
 import org.aerialsounds.nanocli.options.AbstractOption;
+import org.aerialsounds.nanocli.options.OptionTypes;
 
 
 
@@ -31,33 +32,21 @@ public class CliParser implements Observer {
         containers = new HashMap<DataContainer,Set<AbstractOption>>();
     }
     
-    public Option createOption(OptionTypes optionType, String name, String help, ValueTypes valueType, Object defaultValue, String prefix) throws HaveSuchName {
+    public Option createOption(OptionTypes optionType, String name, String help, ValueTypes valueType, Object defaultValue) throws HaveSuchName {
         if ( !hasOption(name) ) {
             registerType(optionType);
-            return createAndRegisterOption(
-                createAndRegisterContainer(defaultValue, valueType, help),
+            return produceOption(
+                produceContainer(defaultValue, valueType, help),
                 optionType,
-                name,
-                prefix
+                name
             );
         }
         else
             throw new HaveSuchName();
     }
     
-    public Option createOption(OptionTypes optionType, String name, String help, ValueTypes valueType, Object defaultValue) throws HaveSuchName {
-        return createOption(
-            optionType,
-            name,
-            help,
-            valueType,
-            defaultValue,
-            factory.getDefaultPrefix(optionType)
-        );
-    }
-    
-    private AbstractOption createAndRegisterOption (DataContainer container, OptionTypes optionType, String name, String prefix) {
-        AbstractOption opt = factory.createOption(optionType, name, prefix);
+    protected AbstractOption produceOption (DataContainer container, OptionTypes optionType, String name) {
+        AbstractOption opt = factory.createOption(optionType, name);
 
         opt.setContainer(container);
         containers.get(container).add(opt);
@@ -66,7 +55,7 @@ public class CliParser implements Observer {
         return opt;
     }
 
-    private DataContainer createAndRegisterContainer (Object defaultValue, ValueTypes valueType, String help) {
+    protected DataContainer produceContainer (Object defaultValue, ValueTypes valueType, String help) {
         DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
 
         containers.put(container, new HashSet<AbstractOption>());

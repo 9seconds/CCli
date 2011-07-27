@@ -3,7 +3,6 @@ package org.aerialsounds.nanocli.options;
 import java.util.Observable;
 
 import org.aerialsounds.nanocli.Option;
-import org.aerialsounds.nanocli.OptionTypes;
 import org.aerialsounds.nanocli.ValueTypes;
 import org.aerialsounds.nanocli.datacontainer.DataContainer;
 import org.aerialsounds.nanocli.datacontainer.DataContainer.DataContainerException;
