@@ -1,7 +1,8 @@
 package org.aerialsounds.nanocli;
 
-import org.aerialsounds.nanocli.options.DataContainer;
-import org.aerialsounds.nanocli.options.GenericOption;
+import org.aerialsounds.nanocli.datacontainer.DataContainer;
+import org.aerialsounds.nanocli.datacontainer.DataContainerFactory;
+import org.aerialsounds.nanocli.options.AbstractOption;
 import org.aerialsounds.nanocli.options.OptionFactory;
 import org.aerialsounds.nanocli.valueparsers.ValueParser;
 import org.aerialsounds.nanocli.valueparsers.ValueParserFactory;
@@ -16,8 +17,8 @@ final class CliFactory {
         this.repository = repository;
     }
     
-    public GenericOption createOption(OptionTypes type, String name) {
-        return OptionFactory.create(type, name);
+    public AbstractOption createOption(OptionTypes type, String name, String prefix) {
+        return OptionFactory.create(type, name, prefix);
     }
     
     public ValueParser createValueParser(ValueTypes type) {
@@ -25,13 +26,17 @@ final class CliFactory {
     }
     
     public DataContainer createDataContainer(Object defaultValue, ValueTypes valueType, String help) {
-        DataContainer container = new DataContainer(repository);
+        DataContainer container = DataContainerFactory.create(repository);
 
         container.setDefaultValue(defaultValue);
         container.setValueType(valueType);
         container.setHelp(help);
      
         return container;
+    }
+    
+    public String getDefaultPrefix(OptionTypes type) {
+        return OptionFactory.getDefaultPrefix(type);
     }
 
 }

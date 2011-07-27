@@ -5,15 +5,12 @@ import java.util.Observable;
 import org.aerialsounds.nanocli.Option;
 import org.aerialsounds.nanocli.OptionTypes;
 import org.aerialsounds.nanocli.ValueTypes;
-import org.aerialsounds.nanocli.CliParser.OverrideDefaultValue;
-import org.aerialsounds.nanocli.CliParser.OverrideHelp;
-import org.aerialsounds.nanocli.CliParser.OverrideRepository;
-import org.aerialsounds.nanocli.CliParser.OverrideValue;
-import org.aerialsounds.nanocli.CliParser.OverrideValueType;
+import org.aerialsounds.nanocli.datacontainer.DataContainer;
+import org.aerialsounds.nanocli.datacontainer.DataContainer.DataContainerException;
 
 
 
-abstract public class GenericOption
+abstract public class AbstractOption
     extends Observable
     implements Option {
     
@@ -21,7 +18,7 @@ abstract public class GenericOption
     protected OptionTypes optionType;
     protected DataContainer container = null;
     
-    public GenericOption(String name, OptionTypes optionType) {
+    public AbstractOption(String name, OptionTypes optionType) {
         this.name = name;
         this.optionType = optionType;
     }
@@ -69,22 +66,43 @@ abstract public class GenericOption
     }
 
     @Override
-    public void bind (Option other) throws OverrideHelp, OverrideValueType, OverrideDefaultValue, OverrideValue, OverrideRepository {
-        if ( other instanceof GenericOption && this != other ) {
-            DataContainer.synchronize(container, ((GenericOption) other).getContainer());
+    public void bind (Option other) throws CannotBind {
+        if ( other instanceof AbstractOption && this != other ) {
+            try {
+                DataContainer.synchronize(container, ((AbstractOption) other).getContainer());
+            }
+            catch (DataContainerException e) {
+                throw generateBindException(e);
+            }
             setChanged();
             notifyObservers(other);            
+        } else {
+            throw generateBindException(new NotCompatibleClasses());
         }
+    }
+
+    private CannotBind generateBindException (Exception e) {
+        CannotBind err = new CannotBind();
+        err.initCause(e);
+        return err;
     }
 
     @Override
     public boolean equals (Object obj) {
         if ( this == obj )
             return true;
-        else if ( !(obj instanceof GenericOption) )
+        else if ( !(obj instanceof AbstractOption) )
             return false;
         
-        return container.equals(((GenericOption) obj).getContainer());
+        return container.equals(((AbstractOption) obj).getContainer());
+    }
+    
+    static public class CannotBind extends RuntimeException {
+        private static final long serialVersionUID = 9035409865724452061L;
+    }
+    
+    static public class NotCompatibleClasses extends RuntimeException {
+        private static final long serialVersionUID = -1357939518814763047L;
     }
 
 }

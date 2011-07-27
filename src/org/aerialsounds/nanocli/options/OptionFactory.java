@@ -6,7 +6,11 @@ import org.aerialsounds.nanocli.OptionTypes;
 
 public final class OptionFactory {
     
-    static public GenericOption create(OptionTypes type, String name) {
+    static public String getDefaultPrefix(OptionTypes type) {
+        return null;
+    }
+    
+    static public AbstractOption create(OptionTypes type, String name, String prefix) {
         return null;
     }
 

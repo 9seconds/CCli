@@ -1,10 +1,6 @@
 package org.aerialsounds.nanocli;
 
-import org.aerialsounds.nanocli.CliParser.OverrideDefaultValue;
-import org.aerialsounds.nanocli.CliParser.OverrideHelp;
-import org.aerialsounds.nanocli.CliParser.OverrideRepository;
-import org.aerialsounds.nanocli.CliParser.OverrideValue;
-import org.aerialsounds.nanocli.CliParser.OverrideValueType;
+import org.aerialsounds.nanocli.options.AbstractOption.CannotBind;
 
 
 
@@ -16,6 +12,6 @@ public interface Option {
     Object getValue();
     ValueTypes getValueType();
     boolean isParsed();
-    void bind(Option other) throws OverrideHelp, OverrideValueType, OverrideDefaultValue, OverrideValue, OverrideRepository;
+    void bind(Option other) throws CannotBind;
     
 }
