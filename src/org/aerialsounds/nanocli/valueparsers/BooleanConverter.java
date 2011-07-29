@@ -32,18 +32,16 @@ public class BooleanConverter {
 
 
     final boolean convert (final String value) throws CannotConvert {
-        ValuePair result;
-        
-        result = interpretAsNumber(value);
-        if ( result.converted )
-            return result.value;
-
         String s = value.toLowerCase();
         if ( interpretAsString(s, positive) )
             return true;
         else if ( interpretAsString(s, negative) )
             return false;
 
+        ValuePair result = interpretAsNumber(s);
+        if ( result.converted )
+            return result.value;
+        
         throw new CannotConvert();
     }
 

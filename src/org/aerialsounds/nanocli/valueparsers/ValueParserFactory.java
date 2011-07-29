@@ -38,7 +38,7 @@ public final class ValueParserFactory {
             case FLOAT:
                 return new FloatParser();
                 
-            case INT:
+            case INTEGER:
                 return new IntParser();
                 
             case LONG:
@@ -49,9 +49,6 @@ public final class ValueParserFactory {
             
             case STRING:
                 return new StringParser();
-                
-            case NONE:
-                return new NoneParser();
                 
             default:
                 return null;

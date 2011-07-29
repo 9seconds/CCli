@@ -14,12 +14,21 @@ abstract public class AbstractOption
     implements Option {
     
     protected String name;
+    protected String customPrefix;
+    protected String fullName;
     protected OptionTypes optionType;
-    protected DataContainer container = null;
+    protected DataContainer container;
     
-    public AbstractOption(String name, OptionTypes optionType) {
+    public AbstractOption(OptionTypes optionType, String name, DataContainer container) {
+        this(optionType, "", name, container);
+    }
+    
+    public AbstractOption(OptionTypes optionType, String customPrefix, String name, DataContainer container) {
         this.name = name;
+        this.customPrefix = customPrefix;
         this.optionType = optionType;
+        this.container = container;
+        this.fullName = optionType.getPrefix() + customPrefix + name;
     }
 
     public void setContainer(DataContainer container) {
@@ -29,10 +38,20 @@ abstract public class AbstractOption
     public DataContainer getContainer() {
         return container;
     }
+    
+    @Override
+    public String getCustomPrefix() {
+        return customPrefix;
+    }
+    
+    @Override
+    public String getFullName() {
+        return fullName;
+    }
 
     @Override
     public String getHelp () {
-        return ( container != null ) ? container.getHelp() : null;
+        return container.getHelp();
     }
 
 
@@ -50,18 +69,22 @@ abstract public class AbstractOption
 
     @Override
     public Object getValue () {
-        return ( container != null ) ? container.getValue() : null;
+        return container.getValue();
+    }
+    
+    public void setValue(Object value) {
+        container.setValue(value);
     }
 
 
     @Override
     public ValueTypes getValueType () {
-        return ( container != null ) ? container.getValueType() : null;
+        return container.getValueType();
     }
 
     @Override
     public boolean isParsed () {
-        return ( container != null ) ? container.isDefined() : false;
+        return container.isDefined();
     }
 
     @Override
@@ -88,7 +111,7 @@ abstract public class AbstractOption
 
     @Override
     public boolean equals (Object obj) {
-        if ( this == obj )
+        if ( this == obj)
             return true;
         else if ( !(obj instanceof AbstractOption) )
             return false;

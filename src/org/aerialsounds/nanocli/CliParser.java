@@ -2,16 +2,13 @@ package org.aerialsounds.nanocli;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.aerialsounds.nanocli.datacontainer.DataContainer;
 import org.aerialsounds.nanocli.options.AbstractOption;
-import org.aerialsounds.nanocli.options.OptionTypes;
 
 
 
@@ -22,71 +19,14 @@ public class CliParser implements Observer {
     
     private boolean parsed = false;
     
-    final protected Map<OptionTypes,Map<String,Option>> options;
     final protected Map<DataContainer,Set<AbstractOption>> containers;
+    final protected Map<String,AbstractOption> options;
     
     public CliParser(String[] args) {
         this.args = args;
         factory = new CliFactory(this);
-        options = new TreeMap<OptionTypes,Map<String,Option>>();
         containers = new HashMap<DataContainer,Set<AbstractOption>>();
-    }
-    
-    public Option createOption(OptionTypes optionType, String name, String help, ValueTypes valueType, Object defaultValue) throws HaveSuchName {
-        if ( !hasOption(name) ) {
-            registerType(optionType);
-            return produceOption(
-                produceContainer(defaultValue, valueType, help),
-                optionType,
-                name
-            );
-        }
-        else
-            throw new HaveSuchName();
-    }
-    
-    protected AbstractOption produceOption (DataContainer container, OptionTypes optionType, String name) {
-        AbstractOption opt = factory.createOption(optionType, name);
-
-        opt.setContainer(container);
-        containers.get(container).add(opt);
-        opt.addObserver(this);
-        
-        return opt;
-    }
-
-    protected DataContainer produceContainer (Object defaultValue, ValueTypes valueType, String help) {
-        DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
-
-        containers.put(container, new HashSet<AbstractOption>());
-        
-        return container;
-    }
-
-    public boolean hasOption(String name) {
-        Iterator<Map<String,Option>> values = options.values().iterator();
-        while ( values.hasNext() ) {
-            if ( values.next().containsKey(name) )
-                return true;
-        }
-        return false;
-    }
-    
-    public Option getOption(String name) {
-        Iterator<Map<String,Option>> values = options.values().iterator();
-        while ( values.hasNext() ) {
-            Option opt = values.next().get(name);
-            if ( opt != null )
-                return opt;
-        }
-        return null;
-    }
-    
-    public Option getOption(String name, OptionTypes type) {
-        Map<String,Option> container = options.get(type);
-        return ( container != null )
-            ? container.get(name)
-            : null;
+        options = new HashMap<String,AbstractOption>();
     }
     
     public boolean isParsed() {
@@ -99,11 +39,24 @@ public class CliParser implements Observer {
         }
     }
     
-    private void registerType(OptionTypes type) {
-        if ( options.containsKey(type) )
-            options.put(type, new TreeMap<String,Option>());
+    protected boolean registerOption(AbstractOption option) {
+        String name = option.getFullName();
+        if ( options.containsKey(name) )
+            return false;
+        else
+            options.put(name, option);
+        return true;
     }
-
+    
+    protected void registerContainer(DataContainer container) {
+        containers.put(container, new HashSet<AbstractOption>());
+    }
+    
+    protected void associate(DataContainer container, AbstractOption option) {
+        Set<AbstractOption> set = containers.get(container);
+        if ( set != null )
+            set.add(option);
+    }
     
     @Override
     public void update (Observable o, Object arg) {
@@ -123,7 +76,7 @@ public class CliParser implements Observer {
         }
     }
     
-    static public class HaveSuchName extends RuntimeException {
+    static public class HaveSuchOption extends RuntimeException {
         private static final long serialVersionUID = -5248825722401579070L;
     }
     

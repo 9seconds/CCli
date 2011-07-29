@@ -64,8 +64,12 @@ public class DataContainer {
     protected ValueTypes valueType = null;
     protected Object value = null;
     protected Object defaultValue = null;
-    protected CliParser repository;
+    protected CliParser repository = null;
     protected boolean defined = false;
+    
+    public DataContainer() {
+        this(null);
+    }
     
     public DataContainer(CliParser repository) {
         this.repository = repository;

@@ -9,6 +9,8 @@ public interface Option {
 
     String getHelp();
     String getName();
+    String getCustomPrefix();
+    String getFullName();
     OptionTypes getType();
     Object getValue();
     ValueTypes getValueType();
