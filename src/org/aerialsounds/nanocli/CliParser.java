@@ -43,8 +43,10 @@ public class CliParser implements Observer {
         String name = option.getFullName();
         if ( options.containsKey(name) )
             return false;
-        else
-            options.put(name, option);
+        
+        options.put(name, option);
+        option.addObserver(this);
+        
         return true;
     }
     
@@ -60,7 +62,7 @@ public class CliParser implements Observer {
     
     @Override
     public void update (Observable o, Object arg) {
-        if ( o instanceof AbstractOption && arg instanceof AbstractOption ) {
+        if ( o != arg && o instanceof AbstractOption && arg instanceof AbstractOption ) {
             DataContainer firstContainer = ((AbstractOption) o).getContainer();
             DataContainer secondContainer = ((AbstractOption) arg).getContainer();
 

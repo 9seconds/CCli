@@ -108,6 +108,10 @@ abstract public class AbstractOption
         err.initCause(e);
         return err;
     }
+    
+    public void dispose() {
+        deleteObservers();
+    }
 
     @Override
     public boolean equals (Object obj) {
