@@ -39,7 +39,7 @@ public final class ValueParserFactory {
                 return new FloatParser();
                 
             case INTEGER:
-                return new IntParser();
+                return new IntegerParser();
                 
             case LONG:
                 return new LongParser();

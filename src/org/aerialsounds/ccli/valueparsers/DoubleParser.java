@@ -9,9 +9,9 @@ public class DoubleParser
     @Override
     public Object parse (String value) {
         try {
-            return Double.parseDouble(value);
+            return Double.valueOf(value);
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             return null;
         }
     }

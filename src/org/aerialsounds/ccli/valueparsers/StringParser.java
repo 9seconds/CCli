@@ -8,7 +8,9 @@ final class StringParser
 
     @Override
     public Object parse (String value) {
-        return value;
+        return (value != null && value != "")
+            ? value
+            : null;
     }
 
 }

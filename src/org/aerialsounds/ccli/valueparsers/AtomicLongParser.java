@@ -13,7 +13,7 @@ final class AtomicLongParser
         try {
             return new AtomicLong(Long.parseLong(value));
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             return null;
         }
     }

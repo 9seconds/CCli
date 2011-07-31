@@ -9,9 +9,9 @@ final class FloatParser
     @Override
     public Object parse (String value) {
         try {
-            return Float.parseFloat(value);
+            return Float.valueOf(value);
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             return null;
         }
     }

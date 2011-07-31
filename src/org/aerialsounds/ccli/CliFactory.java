@@ -1,7 +1,6 @@
 package org.aerialsounds.ccli;
 
 import org.aerialsounds.ccli.datacontainer.DataContainer;
-import org.aerialsounds.ccli.datacontainer.DataContainerFactory;
 import org.aerialsounds.ccli.options.OptionFactory;
 import org.aerialsounds.ccli.options.ParseableOption;
 import org.aerialsounds.ccli.options.ParseableOption.CannotCreateSuchOption;
@@ -25,7 +24,7 @@ final class CliFactory {
     }
 
     public DataContainer createDataContainer(Object defaultValue, ValueTypes valueType, String help) {
-        DataContainer container = DataContainerFactory.create(repository);
+        DataContainer container = new DataContainer(repository);
 
         container.setDefaultValue(defaultValue);
         container.setValueType(valueType);

@@ -9,9 +9,9 @@ final class ShortParser
     @Override
     public Object parse (String value) {
         try {
-            return Short.parseShort(value);
+            return Short.valueOf(value);
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             return null;
         }
     }

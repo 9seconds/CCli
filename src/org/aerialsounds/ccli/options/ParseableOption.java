@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 import org.aerialsounds.ccli.OptionTypes;
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.valueparsers.ValueParser;
-import org.aerialsounds.ccli.valueparsers.ValueParserFactory;
 
 
 
@@ -18,7 +17,7 @@ abstract public class ParseableOption
 
     public ParseableOption (OptionTypes optionType, String customPrefix, String name, DataContainer container) throws CannotCreateSuchOption {
         super(optionType, customPrefix, name, container);
-        parser = ValueParserFactory.create(getValueType());
+        parser = getValueType().createParser();
 
         checkCorrectness();
     }

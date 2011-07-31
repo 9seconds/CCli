@@ -11,9 +11,9 @@ final class BigIntegerParser
     @Override
     public Object parse (String value) {
         try {
-            return BigInteger.valueOf(Long.parseLong(value));
+            return new BigInteger(value);
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             return null;
         }
     }

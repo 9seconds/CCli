@@ -9,9 +9,9 @@ final class LongParser
     @Override
     public Object parse (String value) {
         try {
-            return Long.parseLong(value);
+            return Long.valueOf(value);
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             return null;
         }
     }

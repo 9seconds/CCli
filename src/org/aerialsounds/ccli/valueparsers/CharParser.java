@@ -9,6 +9,9 @@ final class CharParser
 
     @Override
     public Object parse (String value) {
+        if ( value == null )
+            return null;
+
         return ( value.length() == 1 )
             ? value.toCharArray()[0]
             : null;

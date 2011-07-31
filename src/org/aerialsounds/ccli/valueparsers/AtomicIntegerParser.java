@@ -13,7 +13,7 @@ final class AtomicIntegerParser
         try {
             return new AtomicInteger(Integer.parseInt(value));
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             return null;
         }
     }

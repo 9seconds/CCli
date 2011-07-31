@@ -9,9 +9,9 @@ final class ByteParser
     @Override
     public Object parse (String value) {
         try {
-            return Byte.parseByte(value);
+            return Byte.valueOf(value);
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             return null;
         }
     }

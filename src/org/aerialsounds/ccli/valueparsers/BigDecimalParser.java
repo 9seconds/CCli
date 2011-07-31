@@ -11,9 +11,9 @@ final class BigDecimalParser
     @Override
     public Object parse (String value) {
         try {
-            return BigDecimal.valueOf(Double.parseDouble(value));
+            return new BigDecimal(value);
         }
-        catch (NumberFormatException e) {
+        catch (Exception e) {
             return null;
         }
     }
