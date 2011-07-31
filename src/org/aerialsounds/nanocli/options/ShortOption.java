@@ -9,14 +9,10 @@ import org.aerialsounds.nanocli.datacontainer.DataContainer;
 
 public class ShortOption
     extends ParseableOption {
-    
-    static protected final Pattern inlineRegexp = Pattern.compile(".+(\\d+(?\\d+(?[eE][\\+-]?0?\\d+)?)?)$");
+
+    static protected final Pattern inlineRegexp = Pattern.compile("\\D+((\\d+(\\.?\\d*[eE]?[\\+\\-]?0?\\d+)?)|(\\.?\\d*[eE]?[\\+\\-]?0?\\d+))$");
     static protected final Pattern numbersRegexp = Pattern.compile("\\D*(\\d+)\\D*");
-    
-    public ShortOption(OptionTypes optionType, String name, DataContainer container) {
-        super(optionType, name, container);
-    }
-    
+
     public ShortOption (OptionTypes optionType, String customPrefix, String name, DataContainer container) {
         super(optionType, customPrefix, name, container);
     }
@@ -30,12 +26,19 @@ public class ShortOption
     }
 
     @Override
+    protected void checkCorrectness() throws CannotCreateSuchOption {
+        super.checkCorrectness();
+        if ( name.length() != 1 )
+            throw new CannotCreateSuchOption();
+    }
+
+    @Override
     public boolean haveInlineValue (String option) {
         return ( getValueType().isNumber() && inlineRegexp.matcher(option).matches() );
     }
-    
+
     static public boolean haveNumbers(String option) {
-        return ( numbersRegexp.matcher(option).groupCount() > 0 );
+        return ( numbersRegexp.matcher(option).matches() );
     }
 
 }

@@ -116,6 +116,10 @@ public class DataContainer {
         return defined;
     }
     
+    public void dropDefined() {
+        defined = false;
+    }
+    
     protected void setFrom(DataContainer container) {
         if ( container != this ) {
             help = container.help;

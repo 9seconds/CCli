@@ -12,17 +12,16 @@ import org.aerialsounds.nanocli.datacontainer.DataContainer.DataContainerExcepti
 abstract public class AbstractOption
     extends Observable
     implements Option {
-    
+
     protected String name;
     protected String customPrefix;
     protected String fullName;
     protected OptionTypes optionType;
     protected DataContainer container;
-    
-    public AbstractOption(OptionTypes optionType, String name, DataContainer container) {
-        this(optionType, "", name, container);
-    }
-    
+
+    static public final String STRING_INLINE_DELIMETER = "=".intern();
+    static public final String DEFAULT_CUSTOM_PREFIX = "".intern();
+
     public AbstractOption(OptionTypes optionType, String customPrefix, String name, DataContainer container) {
         this.name = name;
         this.customPrefix = customPrefix;
@@ -34,16 +33,16 @@ abstract public class AbstractOption
     public void setContainer(DataContainer container) {
         this.container = container;
     }
-    
+
     public DataContainer getContainer() {
         return container;
     }
-    
+
     @Override
     public String getCustomPrefix() {
         return customPrefix;
     }
-    
+
     @Override
     public String getFullName() {
         return fullName;
@@ -71,7 +70,7 @@ abstract public class AbstractOption
     public Object getValue () {
         return container.getValue();
     }
-    
+
     public void setValue(Object value) {
         container.setValue(value);
     }
@@ -97,7 +96,7 @@ abstract public class AbstractOption
                 throw generateBindException(e);
             }
             setChanged();
-            notifyObservers(other);            
+            notifyObservers(other);
         } else {
             throw generateBindException(new NotCompatibleClasses());
         }
@@ -108,7 +107,7 @@ abstract public class AbstractOption
         err.initCause(e);
         return err;
     }
-    
+
     public void dispose() {
         deleteObservers();
     }
@@ -119,14 +118,14 @@ abstract public class AbstractOption
             return true;
         else if ( !(obj instanceof AbstractOption) )
             return false;
-        
+
         return container.equals(((AbstractOption) obj).getContainer());
     }
-    
+
     static public class CannotBind extends RuntimeException {
         private static final long serialVersionUID = 9035409865724452061L;
     }
-    
+
     static public class NotCompatibleClasses extends RuntimeException {
         private static final long serialVersionUID = -1357939518814763047L;
     }
