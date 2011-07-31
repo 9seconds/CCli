@@ -3,7 +3,6 @@ package org.aerialsounds.nanocli;
 import org.aerialsounds.nanocli.datacontainer.DataContainer;
 import org.aerialsounds.nanocli.datacontainer.DataContainerFactory;
 import org.aerialsounds.nanocli.options.OptionFactory;
-import org.aerialsounds.nanocli.options.OptionTypes;
 import org.aerialsounds.nanocli.options.ParseableOption;
 import org.aerialsounds.nanocli.options.ParseableOption.CannotCreateSuchOption;
 

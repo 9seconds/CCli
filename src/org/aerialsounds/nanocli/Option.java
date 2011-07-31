@@ -1,6 +1,5 @@
 package org.aerialsounds.nanocli;
 
-import org.aerialsounds.nanocli.options.OptionTypes;
 import org.aerialsounds.nanocli.options.AbstractOption.CannotBind;
 
 

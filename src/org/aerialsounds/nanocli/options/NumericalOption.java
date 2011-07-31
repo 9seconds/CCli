@@ -1,5 +1,6 @@
 package org.aerialsounds.nanocli.options;
 
+import org.aerialsounds.nanocli.OptionTypes;
 import org.aerialsounds.nanocli.datacontainer.DataContainer;
 
 

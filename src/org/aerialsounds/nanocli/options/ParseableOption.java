@@ -2,6 +2,7 @@ package org.aerialsounds.nanocli.options;
 
 import java.util.regex.Pattern;
 
+import org.aerialsounds.nanocli.OptionTypes;
 import org.aerialsounds.nanocli.datacontainer.DataContainer;
 import org.aerialsounds.nanocli.valueparsers.ValueParser;
 import org.aerialsounds.nanocli.valueparsers.ValueParserFactory;

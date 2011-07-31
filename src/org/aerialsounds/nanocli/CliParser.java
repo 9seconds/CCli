@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.aerialsounds.nanocli.datacontainer.DataContainer;
 import org.aerialsounds.nanocli.options.AbstractOption;
-import org.aerialsounds.nanocli.options.OptionTypes;
 import org.aerialsounds.nanocli.options.ParseableOption;
 import org.aerialsounds.nanocli.options.ShortOption;
 
@@ -23,7 +22,7 @@ public class CliParser implements Observer {
     final protected String[] args;
     final protected CliFactory factory;
 
-    private boolean parsed = false;
+    protected boolean parsed = false;
 
     final protected Map<DataContainer,Set<AbstractOption>> containers;
     final protected LinkedList<ParseableOption> options;
@@ -110,12 +109,12 @@ public class CliParser implements Observer {
             confimJoin(joined);
     }
 
-    private void confimJoin (Iterable<AbstractOption> joined) {
+    protected void confimJoin (Iterable<AbstractOption> joined) {
         for ( AbstractOption opt : joined )
             opt.setValue(Boolean.TRUE);
     }
 
-    private Iterable<AbstractOption> findJoinedOptions (String current) {
+    protected Iterable<AbstractOption> findJoinedOptions (String current) {
         final String prefix = OptionTypes.SHORT.getPrefix();
         if ( current.startsWith(prefix) && !ShortOption.haveNumbers(current) ) {
             char[] currentLine = current.substring(prefix.length()).toCharArray();
@@ -161,7 +160,7 @@ public class CliParser implements Observer {
         return appArguments.iterator();
     }
 
-    public Option createOption(OptionTypes type, String customPrefix, String name, Object defaultValue, ValueTypes valueType, String help) throws CannotCreateSuchOption {
+    public Option create(OptionTypes type, String customPrefix, String name, Object defaultValue, ValueTypes valueType, String help) throws CannotCreateSuchOption {
         DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
         ParseableOption opt;
         try {
@@ -174,9 +173,31 @@ public class CliParser implements Observer {
         return opt;
     }
 
+    public void remove(Option option) {
+        if ( option instanceof ParseableOption ) {
+            ParseableOption removed = (ParseableOption) option;
+            if ( options.contains(removed) ) {
+                options.remove(removed);
+                removeContainer(removed);
+                removed.deleteObserver(this);
+            }
+        }
+    }
+
+    protected void removeContainer (ParseableOption option) {
+        DataContainer container = option.getContainer();
+        Set<AbstractOption> containerSet = containers.get(container);
+        if ( containerSet != null ) {
+            containerSet.remove(option);
+            if ( containerSet.isEmpty() )
+                containers.remove(container);
+        }
+    }
+
     protected void register (DataContainer container, ParseableOption opt) {
         registerContainer(container, opt);
         registerOption(opt);
+        parsed = false;
     }
 
     protected void registerOption (ParseableOption opt) {

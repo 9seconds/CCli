@@ -1,4 +1,4 @@
-package org.aerialsounds.nanocli.options;
+package org.aerialsounds.nanocli;
 
 public enum OptionTypes {
 
