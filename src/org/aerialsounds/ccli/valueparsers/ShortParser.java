@@ -1,17 +1,20 @@
+
+
+
 package org.aerialsounds.ccli.valueparsers;
 
 
 
-final class ShortParser
+final public class ShortParser
     implements NumberValueParser {
 
 
     @Override
-    public Object parse (String value) {
+    public Object parse (final String value) {
         try {
             return Short.valueOf(value);
         }
-        catch (Exception e) {
+        catch ( Exception e ) {
             return null;
         }
     }

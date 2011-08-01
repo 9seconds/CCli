@@ -1,5 +1,7 @@
 package org.aerialsounds.ccli.valueparsers;
 
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -7,37 +9,34 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.aerialsounds.ccli.ValueTypes;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-
-public class ValueParserTest
-    extends Assert {
+public class ValueParserTest {
 
     private static final String BOOLEAN_TRUE = "true";
     private static final String BIG_INT      = "1046943479208775920458790207774013104";
     private static final String NAN          = "sdflsdklfsldfnpppsdfns;[sdfn";
 
-    private ValueParser parserAtomicBoolean;
-    private ValueParser parserAtomicInteger;
-    private ValueParser parserAtomicLong;
-    private ValueParser parserBigDecimal;
-    private ValueParser parserBigInteger;
-    private ValueParser parserBoolean;
-    private ValueParser parserByte;
-    private ValueParser parserChar;
-    private ValueParser parserDouble;
-    private ValueParser parserFloat;
-    private ValueParser parserInteger;
-    private ValueParser parserLong;
-    private ValueParser parserShort;
-    private ValueParser parserString;
+    static private ValueParser parserAtomicBoolean;
+    static private ValueParser parserAtomicInteger;
+    static private ValueParser parserAtomicLong;
+    static private ValueParser parserBigDecimal;
+    static private ValueParser parserBigInteger;
+    static private ValueParser parserBoolean;
+    static private ValueParser parserByte;
+    static private ValueParser parserChar;
+    static private ValueParser parserDouble;
+    static private ValueParser parserFloat;
+    static private ValueParser parserInteger;
+    static private ValueParser parserLong;
+    static private ValueParser parserShort;
+    static private ValueParser parserString;
 
 
-    @Before
-    public void setUp () throws Exception {
+    @BeforeClass
+    static public void setUp () throws Exception {
         parserAtomicBoolean = ValueTypes.ATOMIC_BOOLEAN.createParser();
         parserAtomicInteger = ValueTypes.ATOMIC_INTEGER.createParser();
         parserAtomicLong    = ValueTypes.ATOMIC_LONG.createParser();
@@ -123,6 +122,7 @@ public class ValueParserTest
 
         assertTrue(((AtomicBoolean) parserAtomicBoolean.parse(Boolean.TRUE.toString())).get());
         assertFalse(((AtomicBoolean) parserAtomicBoolean.parse(Boolean.FALSE.toString())).get());
+        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse(String.valueOf(BooleanConverter.NUMERICAL_SIGN_TRUE))).get());
     }
 
     @Test
@@ -248,6 +248,7 @@ public class ValueParserTest
 
         assertTrue((Boolean) parserBoolean.parse(Boolean.TRUE.toString()));
         assertFalse((Boolean) parserBoolean.parse(Boolean.FALSE.toString()));
+        assertTrue((Boolean) parserBoolean.parse(String.valueOf(BooleanConverter.NUMERICAL_SIGN_TRUE)));
     }
 
     @Test
@@ -386,6 +387,11 @@ public class ValueParserTest
         assertTrue(parserString.parse("0") instanceof String);
         assertTrue(parserString.parse(BIG_INT) instanceof String);
         assertTrue(parserString.parse(BOOLEAN_TRUE) instanceof String);
+
+        assertEquals(BOOLEAN_TRUE, parserString.parse(BOOLEAN_TRUE));
+        assertEquals(BIG_INT, parserString.parse(BIG_INT));
+        assertEquals("0", parserString.parse("0"));
+        assertEquals("1.2e-05", parserString.parse("1.2e-05"));
     }
 
 }

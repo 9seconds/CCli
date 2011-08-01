@@ -1,19 +1,24 @@
+
+
+
 package org.aerialsounds.ccli.valueparsers;
+
+
 
 import java.math.BigDecimal;
 
 
 
-final class BigDecimalParser
+final public class BigDecimalParser
     implements NumberValueParser {
 
 
     @Override
-    public Object parse (String value) {
+    public Object parse (final String value) {
         try {
             return new BigDecimal(value);
         }
-        catch (Exception e) {
+        catch ( Exception e ) {
             return null;
         }
     }

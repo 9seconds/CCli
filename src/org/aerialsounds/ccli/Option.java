@@ -15,5 +15,5 @@ public interface Option {
     ValueTypes getValueType();
     boolean isParsed();
     void bind(Option other) throws CannotBind;
-    
+
 }

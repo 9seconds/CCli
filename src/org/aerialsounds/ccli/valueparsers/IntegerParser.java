@@ -1,17 +1,20 @@
+
+
+
 package org.aerialsounds.ccli.valueparsers;
 
 
 
-
-final class IntegerParser
+final public class IntegerParser
     implements NumberValueParser {
 
+
     @Override
-    public Object parse (String value) {
+    public Object parse (final String value) {
         try {
             return Integer.valueOf(value);
         }
-        catch (Exception e) {
+        catch ( Exception e ) {
             return null;
         }
 

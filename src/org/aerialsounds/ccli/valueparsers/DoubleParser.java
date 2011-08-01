@@ -1,17 +1,20 @@
+
+
+
 package org.aerialsounds.ccli.valueparsers;
 
 
 
-public class DoubleParser
+final public class DoubleParser
     implements NumberValueParser {
 
 
     @Override
-    public Object parse (String value) {
+    public Object parse (final String value) {
         try {
             return Double.valueOf(value);
         }
-        catch (Exception e) {
+        catch ( Exception e ) {
             return null;
         }
     }

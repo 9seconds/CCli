@@ -14,10 +14,11 @@ import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.options.AbstractOption;
 import org.aerialsounds.ccli.options.ParseableOption;
 import org.aerialsounds.ccli.options.ShortOption;
+import org.aerialsounds.ccli.valueparsers.BooleanConverter;
 
 
 
-public class CliParser implements Observer {
+public class CCli implements Observer {
 
     final protected String[] args;
     final protected CliFactory factory;
@@ -28,7 +29,7 @@ public class CliParser implements Observer {
     final protected LinkedList<ParseableOption> options;
     final protected Collection<String> appArguments;
 
-    public CliParser(String[] args) {
+    public CCli(String[] args) {
         this.args = args;
         factory = new CliFactory(this);
         containers = new HashMap<DataContainer,Set<AbstractOption>>();
@@ -41,86 +42,86 @@ public class CliParser implements Observer {
     }
 
     public void parse() throws CannotParse {
-        if ( !parsed ) {
-            parsed = true;
+        if ( args == null )
+            throw new CannotParse();
 
+        if ( !parsed ) {
             clearParsedData();
+
+            String inlineValue = null;
+            Object parsedValue = null;
+            String current = null;
+            ParseableOption option = null;
             for ( int i = 0; i < args.length; ++i ) {
-                String current = args[i];
-                ParseableOption option = findOption(current);
+                current = args[i];
+                option = findOption(current);
 
                 if ( option != null && !appArguments.isEmpty() )
                     interruptParsing();
 
-                if ( option == null )
-                    parseUnknownOption(current);
-                else {
-                    // first of all, we need to check Boolean values because they are shitty
-                    if ( option.getValueType().isBoolean() ) {
-                        // OK, it is boolean and it happens.
-                        option.setValue(option.parse(Boolean.TRUE.toString()));
-                        // but we need to be sure that it is not redefined by some other values
+                if ( option != null ) {
+                    if ( option.getValueType().isBoolean() )
+                        setBooleanTrue(option);
 
-                        String inlineValue = option.getInlineValue(current);
-                        if ( inlineValue != null ) { // hmm, have inline value! check it
-                            Object parsedValue = option.parse(inlineValue);
-                            if ( parsedValue == null )
-                                interruptParsing();
-                            else
-                                option.setValue(parsedValue);
-                        } else { // check next argument
-                            if ( i < args.length - 1 ) {
-                                Object parsedValue = option.parse(args[i+1]);
-                                if ( parsedValue != null ) {
-                                    option.setValue(parsedValue);
-                                    ++i;
-                                }
-                            }
-                        }
-                    } else { // it is really convenient to handle boolean values distinct
-                        String inlineValue = option.getInlineValue(current);
-                        Object parsedValue = null;
-                        if ( inlineValue == null ) // sad, but it is not inlined
-                            if ( i == args.length - 1 )
-                                interruptParsing();
-                            else {
-                                parsedValue = option.parse(args[i+1]);
-                                if ( parsedValue != null )
-                                    ++i;
-                            }
-                        else
-                            parsedValue = option.parse(inlineValue);
-
-                        if ( parsedValue == null )
+                    inlineValue = option.getInlineValue(current);
+                    parsedValue = null;
+                    if ( inlineValue == null )
+                        if ( i < args.length - 1 ) {
+                            parsedValue = option.parse(args[i+1]);
+                            if ( parsedValue != null )
+                                ++i;
+                        } else
                             interruptParsing();
-                        else
-                            option.setValue(parsedValue);
-                    }
-                }
+                    else
+                        parsedValue = option.parse(inlineValue);
+
+                    if ( parsedValue == null )
+                        interruptParsing();
+                    else
+                        option.setValue(parsedValue);
+                } else if ( !parseUnknownOption(current) )
+                    appArguments.add(current);
             }
+            if ( isContainersConsistent() )
+                throw new CannotParse();
+
+            parsed = true;
         }
     }
 
-    protected void parseUnknownOption (String current) {
-        Iterable<AbstractOption> joined = findJoinedOptions(current);
-        if ( joined == null )
-            appArguments.add(current);
-        else
+    private boolean isContainersConsistent () {
+        Set<DataContainer> conainersSet = containers.keySet();
+        for ( DataContainer container : conainersSet )
+            if ( !container.isConsistent() )
+                return false;
+        return true;
+    }
+
+    protected void setBooleanTrue (ParseableOption option) {
+        option.setValue(option.parse(BooleanConverter.TRUE));
+    }
+
+    protected boolean parseUnknownOption (String current) {
+        Iterable<ParseableOption> joined = findJoinedOptions(current);
+        if ( joined != null ) {
             confimJoin(joined);
+            return true;
+        }
+        return false;
     }
 
-    protected void confimJoin (Iterable<AbstractOption> joined) {
-        for ( AbstractOption opt : joined )
-            opt.setValue(Boolean.TRUE);
+    protected void confimJoin (Iterable<ParseableOption> joined) {
+        for ( ParseableOption opt : joined )
+            setBooleanTrue(opt);
     }
 
-    protected Iterable<AbstractOption> findJoinedOptions (String current) {
+    protected Iterable<ParseableOption> findJoinedOptions (String current) {
         final String prefix = OptionTypes.SHORT.getPrefix();
         if ( current.startsWith(prefix) && !ShortOption.haveNumbers(current) ) {
             char[] currentLine = current.substring(prefix.length()).toCharArray();
-            Collection<AbstractOption> list = new LinkedList<AbstractOption>();
+            Collection<ParseableOption> list = new LinkedList<ParseableOption>();
             for ( char currentChar : currentLine ) {
-                AbstractOption opt = findOption(prefix + Character.toString(currentChar));
+                ParseableOption opt = findOption(prefix + Character.toString(currentChar));
                 if ( opt != null && opt.getValueType().isBoolean() )
                     list.add(opt);
                 else
@@ -141,6 +142,7 @@ public class CliParser implements Observer {
         Set<DataContainer> conainersSet = containers.keySet();
         for ( DataContainer container : conainersSet )
             container.dropDefined();
+        parsed = false;
     }
 
     protected ParseableOption findOption(String option) {
@@ -184,7 +186,7 @@ public class CliParser implements Observer {
         }
     }
 
-    protected void removeContainer (ParseableOption option) {
+    protected void removeContainer (AbstractOption option) {
         DataContainer container = option.getContainer();
         Set<AbstractOption> containerSet = containers.get(container);
         if ( containerSet != null ) {

@@ -9,9 +9,9 @@ import org.aerialsounds.ccli.options.ParseableOption.CannotCreateSuchOption;
 
 final class CliFactory {
 
-    private CliParser repository;
+    private CCli repository;
 
-    public CliFactory(CliParser repository) {
+    public CliFactory(CCli repository) {
         this.repository = repository;
     }
 

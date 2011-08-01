@@ -1,19 +1,24 @@
+
+
+
 package org.aerialsounds.ccli.valueparsers;
+
+
 
 import java.util.concurrent.atomic.AtomicLong;
 
 
 
-final class AtomicLongParser
+final public class AtomicLongParser
     implements NumberValueParser {
 
 
     @Override
-    public Object parse (String value) {
+    public Object parse (final String value) {
         try {
             return new AtomicLong(Long.parseLong(value));
         }
-        catch (Exception e) {
+        catch ( Exception e ) {
             return null;
         }
     }

@@ -1,19 +1,24 @@
+
+
+
 package org.aerialsounds.ccli.valueparsers;
+
+
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 
 
-final class AtomicIntegerParser
+final public class AtomicIntegerParser
     implements NumberValueParser {
 
 
     @Override
-    public Object parse (String value) {
+    public Object parse (final String value) {
         try {
-            return new AtomicInteger(Integer.parseInt(value));
+            return new AtomicInteger(Integer.valueOf(value));
         }
-        catch (Exception e) {
+        catch ( Exception e ) {
             return null;
         }
     }

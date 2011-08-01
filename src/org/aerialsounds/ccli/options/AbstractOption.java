@@ -69,7 +69,9 @@ abstract public class AbstractOption
 
     @Override
     public Object getValue () {
-        return container.getValue();
+        return ( isParsed() )
+            ? container.getValue()
+            : container.getDefaultValue();
     }
 
     public void setValue(Object value) {
@@ -89,15 +91,17 @@ abstract public class AbstractOption
 
     @Override
     public void bind (Option other) throws CannotBind {
-        if ( other instanceof AbstractOption && this != other ) {
-            try {
-                DataContainer.synchronize(container, ((AbstractOption) other).getContainer());
+        if ( other instanceof AbstractOption ) {
+            if ( this != other ) {
+                try {
+                    DataContainer.synchronize(container, ((AbstractOption) other).getContainer());
+                }
+                catch (DataContainerException e) {
+                    throw generateBindException(e);
+                }
+                setChanged();
+                notifyObservers(other);
             }
-            catch (DataContainerException e) {
-                throw generateBindException(e);
-            }
-            setChanged();
-            notifyObservers(other);
         } else {
             throw generateBindException(new NotCompatibleClasses());
         }

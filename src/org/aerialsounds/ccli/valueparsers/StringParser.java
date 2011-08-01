@@ -1,13 +1,16 @@
+
+
+
 package org.aerialsounds.ccli.valueparsers;
 
 
 
-
-final class StringParser
+final public class StringParser
     implements ValueParser {
 
+
     @Override
-    public Object parse (String value) {
+    public Object parse (final String value) {
         return (value != null && value != "")
             ? value
             : null;

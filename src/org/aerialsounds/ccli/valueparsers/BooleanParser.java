@@ -1,19 +1,21 @@
+
+
+
 package org.aerialsounds.ccli.valueparsers;
 
 
 
-
-final class BooleanParser
+final public class BooleanParser
     extends BooleanConverter
     implements ValueParser {
 
 
     @Override
-    public Object parse (String value) {
+    public Object parse (final String value) {
         try {
             return convert(value);
         }
-        catch (Exception e) {
+        catch ( Exception e ) {
             return null;
         }
     }

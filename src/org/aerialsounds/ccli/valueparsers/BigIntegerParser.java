@@ -1,19 +1,24 @@
+
+
+
 package org.aerialsounds.ccli.valueparsers;
+
+
 
 import java.math.BigInteger;
 
 
 
-final class BigIntegerParser
+final public class BigIntegerParser
     implements NumberValueParser {
 
 
     @Override
-    public Object parse (String value) {
+    public Object parse (final String value) {
         try {
             return new BigInteger(value);
         }
-        catch (Exception e) {
+        catch ( Exception e ) {
             return null;
         }
     }
