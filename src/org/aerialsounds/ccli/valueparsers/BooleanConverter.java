@@ -3,7 +3,6 @@
 
 package org.aerialsounds.ccli.valueparsers;
 
-import java.text.Collator;
 
 
 
@@ -40,19 +39,15 @@ public class BooleanConverter {
     final static public String TRUE = String.valueOf(NUMERICAL_SIGN_TRUE);
     final static public String FALSE = String.valueOf(NUMERICAL_SIGN_FALSE);
 
-    final static public Collator comparator = Collator.getInstance();
-
-    static {
-        comparator.setStrength(Collator.PRIMARY);
-    }
-
 
     final boolean convert (final String value) throws CannotConvert {
-        if ( interpretAsString(value, positive) )
-            return true;
-        else if ( interpretAsString(value, negative) ) return false;
+        String s = value.toLowerCase();
 
-        ValuePair result = interpretAsNumber(value);
+        if ( interpretAsString(s, positive) )
+            return true;
+        else if ( interpretAsString(s, negative) ) return false;
+
+        ValuePair result = interpretAsNumber(s);
         if ( result.converted ) return result.value;
 
         throw new CannotConvert();
@@ -77,7 +72,7 @@ public class BooleanConverter {
 
     final private boolean interpretAsString (final String value, final String[] values) {
         for ( String s : values )
-            if ( comparator.compare(value, s) == 0 )
+            if ( value.equals(s) )
                 return true;
 
         return false;

@@ -41,42 +41,38 @@ public enum ValueTypes {
     SHORT(Short.class),
     STRING(String.class);
 
-    private boolean booleanType;
-    private boolean stringType;
-    private boolean intType;
-    private boolean floatType;
     private Class<?> type;
 
     private ValueTypes(Class<?> type) {
-        booleanType = checkBoolean();
-        stringType = checkString();
-        intType = checkInt();
-        floatType = checkFloat();
         this.type = type;
     }
 
-    public Class<?> getType() {
-        return type;
+    public boolean isInstancedBy(Object o) {
+        return type.isInstance(o);
     }
 
     public boolean isBoolean() {
-        return booleanType;
+        return ( this == BOOLEAN || this == ATOMIC_BOOLEAN );
     }
 
     public boolean isString() {
-        return stringType;
+        return ( this == STRING || this == CHAR );
     }
 
     public boolean isInt() {
-        return intType;
+        return ( this == INTEGER || this == BYTE || this == SHORT || this == LONG || this == BIG_INTEGER || this == ATOMIC_INTEGER || this == ATOMIC_LONG );
     }
 
     public boolean isFloat() {
-        return floatType;
+        return ( this == DOUBLE || this == FLOAT || this == BIG_DECIMAL );
+    }
+
+    public boolean isAtomic() {
+        return ( this == ATOMIC_BOOLEAN || this == ATOMIC_INTEGER || this == ATOMIC_LONG );
     }
 
     public boolean isNumber() {
-        return ( intType || floatType );
+        return ( isInt() || isFloat() );
     }
 
     public ValueParser createParser() {
@@ -121,26 +117,8 @@ public enum ValueTypes {
                 return new ShortParser();
 
             case STRING:
-                return new StringParser();
-
             default:
-                return null;
+                return new StringParser();
         }
-    }
-
-    private boolean checkBoolean() {
-        return ( this == BOOLEAN || this == ATOMIC_BOOLEAN );
-    }
-
-    private boolean checkString() {
-        return ( this == STRING || this == CHAR );
-    }
-
-    private boolean checkInt() {
-        return ( this == INTEGER || this == BYTE || this == SHORT || this == LONG || this == BIG_INTEGER || this == ATOMIC_INTEGER || this == ATOMIC_LONG );
-    }
-
-    private boolean checkFloat() {
-        return ( this == DOUBLE || this == FLOAT || this == BIG_DECIMAL );
     }
 }

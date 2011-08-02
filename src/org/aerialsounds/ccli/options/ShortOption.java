@@ -11,7 +11,7 @@ import org.aerialsounds.ccli.datacontainer.DataContainer;
 public class ShortOption
     extends ParseableOption {
 
-    static protected final Pattern inlineRegexp = Pattern.compile("\\D+((\\d+(\\.?\\d*[eE]?[\\+\\-]?0?\\d+)?)|(\\.?\\d*[eE]?[\\+\\-]?0?\\d+))$");
+    static protected final Pattern inlineRegexp = Pattern.compile("\\D+((\\d+(\\.?\\d*[eE]?[\\+\\-]?0?\\d+)?)|(\\.?\\d*[eE]?[\\+\\-]?\\d+))$");
     static protected final Pattern numbersRegexp = Pattern.compile("\\D*(\\d+)\\D*");
 
     public ShortOption (OptionTypes optionType, String customPrefix, String name, DataContainer container) {

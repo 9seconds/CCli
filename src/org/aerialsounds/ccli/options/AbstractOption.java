@@ -1,12 +1,11 @@
 package org.aerialsounds.ccli.options;
 
-import java.util.Observable;
-
 import org.aerialsounds.ccli.Option;
 import org.aerialsounds.ccli.OptionTypes;
 import org.aerialsounds.ccli.ValueTypes;
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.datacontainer.DataContainer.DataContainerException;
+import org.aerialsounds.ccli.optionobservable.Observable;
 
 
 
@@ -27,12 +26,14 @@ abstract public class AbstractOption
         this.name = name;
         this.customPrefix = customPrefix;
         this.optionType = optionType;
-        this.container = container;
         this.fullName = optionType.getPrefix() + customPrefix + name;
+
+        setContainer(container);
     }
 
     public void setContainer(DataContainer container) {
         this.container = container;
+        registerObserver(container.getRepository());
     }
 
     public DataContainer getContainer() {
@@ -92,19 +93,20 @@ abstract public class AbstractOption
     @Override
     public void bind (Option other) throws CannotBind {
         if ( other instanceof AbstractOption ) {
+            AbstractOption another = (AbstractOption) other;
             if ( this != other ) {
                 try {
-                    DataContainer.synchronize(container, ((AbstractOption) other).getContainer());
+                    DataContainer.synchronize(container, another.getContainer());
+                    registerObserver(container.getRepository());
+                    another.registerObserver(another.container.getRepository());
                 }
                 catch (DataContainerException e) {
                     throw generateBindException(e);
                 }
-                setChanged();
-                notifyObservers(other);
+                notifyObserver(another);
             }
-        } else {
+        } else
             throw generateBindException(new NotCompatibleClasses());
-        }
     }
 
     private CannotBind generateBindException (Exception e) {
@@ -114,7 +116,7 @@ abstract public class AbstractOption
     }
 
     public void dispose() {
-        deleteObservers();
+        deleteObserver();
     }
 
     @Override
@@ -124,7 +126,10 @@ abstract public class AbstractOption
         else if ( !(obj instanceof AbstractOption) )
             return false;
 
-        return container.equals(((AbstractOption) obj).getContainer());
+        return (
+                ( super.equals(obj) )
+             && ( container.equals(((AbstractOption) obj).getContainer()) )
+        );
     }
 
     static public class CannotBind extends RuntimeException {

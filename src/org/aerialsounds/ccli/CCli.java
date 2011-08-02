@@ -6,14 +6,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 
 import org.aerialsounds.ccli.datacontainer.DataContainer;
+import org.aerialsounds.ccli.optionobservable.Observable;
+import org.aerialsounds.ccli.optionobservable.Observer;
 import org.aerialsounds.ccli.options.AbstractOption;
 import org.aerialsounds.ccli.options.ParseableOption;
 import org.aerialsounds.ccli.options.ShortOption;
+import org.aerialsounds.ccli.options.AbstractOption.CannotBind;
 import org.aerialsounds.ccli.valueparsers.BooleanConverter;
 
 
@@ -181,7 +182,7 @@ public class CCli implements Observer {
             if ( options.contains(removed) ) {
                 options.remove(removed);
                 removeContainer(removed);
-                removed.deleteObserver(this);
+                removed.dispose();
             }
         }
     }
@@ -198,13 +199,8 @@ public class CCli implements Observer {
 
     protected void register (DataContainer container, ParseableOption opt) {
         registerContainer(container, opt);
-        registerOption(opt);
-        parsed = false;
-    }
-
-    protected void registerOption (ParseableOption opt) {
         options.add(opt);
-        opt.addObserver(this);
+        parsed = false;
     }
 
     protected void registerContainer (DataContainer container, AbstractOption opt) {
@@ -226,11 +222,23 @@ public class CCli implements Observer {
         return opt;
     }
 
+    public static void bind(Option one, Option another) throws CannotBind {
+        one.bind(another);
+    }
+
+    static public class CannotCreateSuchOption extends RuntimeException {
+        private static final long serialVersionUID = -5248825722401579070L;
+    }
+
+    static public class CannotParse extends RuntimeException {
+        private static final long serialVersionUID = 6228517677445066958L;
+    }
+
     @Override
-    public void update (Observable o, Object arg) {
-        if ( o != arg && o instanceof AbstractOption && arg instanceof AbstractOption ) {
-            DataContainer firstContainer = ((AbstractOption) o).getContainer();
-            DataContainer secondContainer = ((AbstractOption) arg).getContainer();
+    public void update (Observable initiator, Object initiated) {
+        if ( initiator instanceof AbstractOption && initiated instanceof AbstractOption && initiator != initiated ) {
+            DataContainer firstContainer = ((AbstractOption) initiator).getContainer();
+            DataContainer secondContainer = ((AbstractOption) initiated).getContainer();
 
             Set<AbstractOption> firstSet = containers.get(firstContainer);
             Set<AbstractOption> secondSet = containers.get(secondContainer);
@@ -242,14 +250,6 @@ public class CCli implements Observer {
                 containers.remove(secondContainer);
             }
         }
-    }
-
-    static public class CannotCreateSuchOption extends RuntimeException {
-        private static final long serialVersionUID = -5248825722401579070L;
-    }
-
-    static public class CannotParse extends RuntimeException {
-        private static final long serialVersionUID = 6228517677445066958L;
     }
 
 }

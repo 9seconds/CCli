@@ -346,7 +346,7 @@ public class DataContainerTest {
         assertTrue(another.isConsistent());
 
         another.setValue(null);
-        assertFalse(another.isConsistent());
+        assertTrue(another.isConsistent());
         another.setValue(BigInteger.TEN);
         assertTrue(another.isConsistent());
 

@@ -20,7 +20,8 @@ final class SyncHelp
             first.help = second.help;
         else if ( second.help == null )
             second.help = first.help;
-        else if ( !first.help.equals(second.help) ) throw new OverrideHelp();
+        else if ( !first.help.equals(second.help) )
+            throw new OverrideHelp();
     }
 
 }

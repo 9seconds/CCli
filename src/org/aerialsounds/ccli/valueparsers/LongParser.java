@@ -12,7 +12,7 @@ final public class LongParser
     @Override
     public Object parse (final String value) {
         try {
-            return Long.valueOf(value);
+            return Long.parseLong(value);
         }
         catch ( Exception e ) {
             return null;

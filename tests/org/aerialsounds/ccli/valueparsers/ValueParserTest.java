@@ -330,16 +330,16 @@ public class ValueParserTest {
         assertTrue(parserFloat.parse("-1.033E0") instanceof Float);
         assertTrue(parserFloat.parse("-1.033e01") instanceof Float);
         assertTrue(parserFloat.parse("-1.033E-02") instanceof Float);
-        assertTrue(parserFloat.parse("-1.033E+03") instanceof Float);
+        assertTrue(parserFloat.parse("-1.033E+03f") instanceof Float);
 
-        assertEquals((float) 0.0, parserFloat.parse("0"));
-        assertEquals((float) 1.0, parserFloat.parse("1"));
-        assertEquals((float) 1.0, parserFloat.parse("1.0"));
-        assertEquals((float) -1.0, parserFloat.parse("-1.0"));
-        assertEquals((float) -1.033E0, parserFloat.parse("-1.033E0"));
-        assertEquals((float) -1.033e01, parserFloat.parse("-1.033e01"));
-        assertEquals((float) -1.033E-02, parserFloat.parse("-1.033E-02"));
-        assertEquals((float) -1.033E+03, parserFloat.parse("-1.033E+03"));
+        assertEquals(0.0f, parserFloat.parse("0"));
+        assertEquals(1.0f, parserFloat.parse("1"));
+        assertEquals(1.0f, parserFloat.parse("1.0"));
+        assertEquals(-1.0f, parserFloat.parse("-1.0"));
+        assertEquals(-1.033E0f, parserFloat.parse("-1.033E0"));
+        assertEquals(-1.033e01f, parserFloat.parse("-1.033e01"));
+        assertEquals(-1.033E-02f, parserFloat.parse("-1.033E-02"));
+        assertEquals(-1.033E+03f, parserFloat.parse("-1.033E+03F"));
     }
 
     @Test
@@ -358,6 +358,24 @@ public class ValueParserTest {
         assertEquals(0, parserInteger.parse("0"));
         assertEquals(1, parserInteger.parse("1"));
         assertEquals(-1, parserInteger.parse("-1"));
+    }
+
+    @Test
+    public void testLong () {
+        assertNull(parserLong.parse(null));
+        assertNull(parserLong.parse(""));
+        assertNull(parserLong.parse(NAN));
+        assertNull(parserLong.parse("1.0"));
+        assertNull(parserLong.parse(BIG_INT));
+        assertNull(parserLong.parse(BOOLEAN_TRUE));
+
+        assertTrue(parserLong.parse("0") instanceof Long);
+        assertTrue(parserLong.parse("1") instanceof Long);
+        assertTrue(parserLong.parse("-1") instanceof Long);
+
+        assertEquals(0L, parserLong.parse("0"));
+        assertEquals(1L, parserLong.parse("1"));
+        assertEquals(-1L, parserLong.parse("-1"));
     }
 
     @Test

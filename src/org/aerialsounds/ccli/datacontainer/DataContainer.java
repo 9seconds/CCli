@@ -99,27 +99,25 @@ public class DataContainer {
     static public void synchronize (final DataContainer first, final DataContainer second)
         throws DataContainerException {
         if ( first != second ) {
-            boolean successful = false;
             backup(first, second);
-
             try {
                 for ( SyncStrategies strategy : syncStrategies )
                     strategy.sync(first, second);
-                successful = true;
             }
-            finally {
-                if ( !successful ) rollback(first, second);
+            catch ( DataContainerException e ) {
+                rollback(first, second);
+                throw e;
             }
         }
     }
 
 
-    protected String     help         = null;
-    protected ValueTypes valueType    = null;
+    protected String     help;
+    protected ValueTypes valueType;
     protected Object     value        = DEFAULT_VALUE;
     protected Object     defaultValue = DEFAULT_VALUE;
-    protected CCli       repository   = null;
-    protected boolean    defined      = false;
+    protected CCli       repository;
+    protected boolean    defined;
 
 
     public DataContainer () {
@@ -142,9 +140,10 @@ public class DataContainer {
     public boolean equals (final Object obj) {
         if ( this == obj )
             return true;
-        else if ( getClass() != obj.getClass() ) return false;
+        else if ( getClass() != obj.getClass() )
+            return false;
 
-        DataContainer other = (DataContainer)obj;
+        DataContainer other = (DataContainer) obj;
         return (isFieldsEqual(help, other.help) && isFieldsEqual(valueType, other.valueType) &&
             isFieldsEqual(value, other.value) && isFieldsEqual(defaultValue, other.defaultValue) && isFieldsEqual(
             repository,
@@ -178,12 +177,26 @@ public class DataContainer {
 
 
     public boolean isConsistent () {
-        return ((help != null) && (repository != null) && isCorrectType(defaultValue) && isCorrectType(value) && (value == null ^ defined));
-    }
+        boolean correctValueType = (valueType != null);
+        boolean correctDefaultValue = (
+               correctValueType
+            && ( defaultValue != DEFAULT_VALUE )
+            && valueType.isInstancedBy(defaultValue)
+        );
+        boolean correctValue = (
+               correctValueType
+            && ( ( value == DEFAULT_VALUE ) || ( value != DEFAULT_VALUE && valueType.isInstancedBy(value) ) )
+        );
+        boolean correctDefined = (value == DEFAULT_VALUE ^ defined);
 
-
-    protected boolean isCorrectType (final Object obj) {
-        return (valueType != null && obj != DEFAULT_VALUE && valueType.getType().isInstance(obj));
+        return (
+               (help != null)
+            && (repository != null)
+            && correctValueType
+            && correctDefaultValue
+            && correctValue
+            && correctDefined
+        );
     }
 
 
