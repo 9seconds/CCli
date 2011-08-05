@@ -15,7 +15,7 @@ final class SyncDefined
 
     @Override
     public void sync (final DataContainer first, final DataContainer second) throws DataContainerException {
-        boolean defined = (first.defined || second.defined);
+        final boolean defined = (first.defined || second.defined);
         first.defined = defined;
         second.defined = defined;
     }

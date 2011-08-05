@@ -8,27 +8,35 @@ import org.aerialsounds.ccli.datacontainer.DataContainer;
 public class NumericalOption
     extends ParseableOption {
 
+    static protected final String trueValue;
 
-    public NumericalOption (OptionTypes optionType, String customPrefix, String name, DataContainer container) {
-        super(optionType, customPrefix, name, container);
-    }
-
-    @Override
-    protected void checkCorrectness () throws CannotCreateSuchOption {
-        super.checkCorrectness();
-        if ( optionType != OptionTypes.SHORT || !getValueType().isBoolean() || customPrefix != null || !customPrefix.equals(DEFAULT_CUSTOM_PREFIX) )
-            throw new CannotCreateSuchOption();
-    }
-
-    @Override
-    protected String extractInlineValue (String option) {
-        return Boolean.TRUE.toString();
+    static {
+        trueValue = Boolean.TRUE.toString();
     }
 
 
+    public NumericalOption (final OptionTypes optionType, final String name, final DataContainer container) {
+        super(optionType, name, container);
+    }
+
     @Override
-    public boolean haveInlineValue (String option) {
-        return true;
+    protected boolean isDataValid () {
+        return (
+               super.isDataValid()
+            && ( optionType == OptionTypes.SHORT )
+            && getValueType().isBoolean()
+        );
+    }
+
+    @Override
+    protected String extractInlineValue (final String option) {
+        return trueValue;
+    }
+
+
+    @Override
+    public boolean haveInlineValue (final String option) {
+        return option.equals(fullName);
     }
 
 }

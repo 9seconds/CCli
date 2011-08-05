@@ -41,13 +41,13 @@ public enum ValueTypes {
     SHORT(Short.class),
     STRING(String.class);
 
-    private Class<?> type;
+    private final Class<?> type;
 
-    private ValueTypes(Class<?> type) {
+    private ValueTypes(final Class<?> type) {
         this.type = type;
     }
 
-    public boolean isInstancedBy(Object o) {
+    public boolean isInstancedBy(final Object o) {
         return type.isInstance(o);
     }
 

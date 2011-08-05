@@ -7,11 +7,11 @@ public abstract class Observable {
 
     private Observer observer;
 
-    final protected void registerObserver(Observer repository) {
+    final protected void registerObserver(final Observer repository) {
         observer = repository;
     }
 
-    final protected void notifyObserver(Object initiated) {
+    final protected void notifyObserver(final Object initiated) {
         if ( observer != null )
             observer.update(this, initiated);
     }
@@ -21,7 +21,7 @@ public abstract class Observable {
     }
 
     @Override
-    public boolean equals (Object o) {
+    public boolean equals (final Object o) {
         if ( this == o )
             return true;
         else if ( !(o instanceof Observable) )

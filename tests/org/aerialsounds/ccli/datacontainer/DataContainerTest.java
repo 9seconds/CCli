@@ -259,16 +259,12 @@ public class DataContainerTest {
         another.setValueType(ValueTypes.BIG_INTEGER);
         another.setDefaultValue(BigInteger.TEN);
 
-        boolean succesfull = true;
         try {
             DataContainer.synchronize(one, another);
+            fail();
         }
         catch ( DataContainerException e ) {
-            succesfull = false;
-        }
-        finally {
-            if ( succesfull )
-                fail();
+
         }
 
         assertFalse(one.equals(another));

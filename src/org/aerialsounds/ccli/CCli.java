@@ -91,19 +91,19 @@ public class CCli implements Observer {
     }
 
     private boolean isContainersConsistent () {
-        Set<DataContainer> conainersSet = containers.keySet();
+        final Set<DataContainer> conainersSet = containers.keySet();
         for ( DataContainer container : conainersSet )
             if ( !container.isConsistent() )
                 return false;
         return true;
     }
 
-    protected void setBooleanTrue (ParseableOption option) {
+    protected void setBooleanTrue (final ParseableOption option) {
         option.setValue(option.parse(BooleanConverter.TRUE));
     }
 
-    protected boolean parseUnknownOption (String current) {
-        Iterable<ParseableOption> joined = findJoinedOptions(current);
+    protected boolean parseUnknownOption (final String current) {
+        final Iterable<ParseableOption> joined = findJoinedOptions(current);
         if ( joined != null ) {
             confimJoin(joined);
             return true;
@@ -111,16 +111,16 @@ public class CCli implements Observer {
         return false;
     }
 
-    protected void confimJoin (Iterable<ParseableOption> joined) {
+    protected void confimJoin (final Iterable<ParseableOption> joined) {
         for ( ParseableOption opt : joined )
             setBooleanTrue(opt);
     }
 
-    protected Iterable<ParseableOption> findJoinedOptions (String current) {
+    protected Iterable<ParseableOption> findJoinedOptions (final String current) {
         final String prefix = OptionTypes.SHORT.getPrefix();
         if ( current.startsWith(prefix) && !ShortOption.haveNumbers(current) ) {
-            char[] currentLine = current.substring(prefix.length()).toCharArray();
-            Collection<ParseableOption> list = new LinkedList<ParseableOption>();
+            final char[] currentLine = current.substring(prefix.length()).toCharArray();
+            final Collection<ParseableOption> list = new LinkedList<ParseableOption>();
             for ( char currentChar : currentLine ) {
                 ParseableOption opt = findOption(prefix + Character.toString(currentChar));
                 if ( opt != null && opt.getValueType().isBoolean() )
@@ -140,20 +140,17 @@ public class CCli implements Observer {
 
     protected void clearParsedData() {
         appArguments.clear();
-        Set<DataContainer> conainersSet = containers.keySet();
+        final Set<DataContainer> conainersSet = containers.keySet();
         for ( DataContainer container : conainersSet )
             container.dropDefined();
         parsed = false;
     }
 
-    protected ParseableOption findOption(String option) {
-        Iterator<ParseableOption> it = options.iterator();
+    protected ParseableOption findOption(final String option) {
+        final Iterator<ParseableOption> it = options.iterator();
         while ( it.hasNext() ) {
             ParseableOption entry = it.next();
-            String currentName = entry.getFullName();
-            boolean suspectInline = option.startsWith(currentName + AbstractOption.STRING_INLINE_DELIMETER);
-            boolean suspectOption = option.equals(currentName);
-            if ( suspectOption || suspectInline )
+            if ( entry.appropriate(option) )
                 return entry;
         }
         return null;
@@ -163,22 +160,9 @@ public class CCli implements Observer {
         return appArguments.iterator();
     }
 
-    public Option create(OptionTypes type, String customPrefix, String name, Object defaultValue, ValueTypes valueType, String help) throws CannotCreateSuchOption {
-        DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
-        ParseableOption opt;
-        try {
-            opt = factory.createOption(type, customPrefix, name, container);
-        }
-        catch ( ParseableOption.CannotCreateSuchOption e ) {
-            throw new CannotCreateSuchOption();
-        }
-        register(container, opt);
-        return opt;
-    }
-
-    public void remove(Option option) {
+    public void remove(final Option option) {
         if ( option instanceof ParseableOption ) {
-            ParseableOption removed = (ParseableOption) option;
+            final ParseableOption removed = (ParseableOption) option;
             if ( options.contains(removed) ) {
                 options.remove(removed);
                 removeContainer(removed);
@@ -187,9 +171,9 @@ public class CCli implements Observer {
         }
     }
 
-    protected void removeContainer (AbstractOption option) {
-        DataContainer container = option.getContainer();
-        Set<AbstractOption> containerSet = containers.get(container);
+    protected void removeContainer (final AbstractOption option) {
+        final DataContainer container = option.getContainer();
+        final Set<AbstractOption> containerSet = containers.get(container);
         if ( containerSet != null ) {
             containerSet.remove(option);
             if ( containerSet.isEmpty() )
@@ -197,36 +181,36 @@ public class CCli implements Observer {
         }
     }
 
-    protected void register (DataContainer container, ParseableOption opt) {
+    protected void register (final DataContainer container, final ParseableOption opt) {
         registerContainer(container, opt);
         options.add(opt);
         parsed = false;
     }
 
-    protected void registerContainer (DataContainer container, AbstractOption opt) {
-        Set<AbstractOption> containerSet = new HashSet<AbstractOption>();
+    protected void registerContainer (final DataContainer container, final AbstractOption opt) {
+        final Set<AbstractOption> containerSet = new HashSet<AbstractOption>();
         containerSet.add(opt);
         containers.put(container, containerSet);
     }
 
-    public Option createOption(OptionTypes type, String name, Object defaultValue, ValueTypes valueType, String help) throws CannotCreateSuchOption {
-        DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
+    public Option createOption(final OptionTypes type, final String name, final Object defaultValue, final ValueTypes valueType, final String help) throws CannotCreateThisOption {
+        final DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
         ParseableOption opt;
         try {
             opt = factory.createOption(type, name, container);
         }
         catch ( ParseableOption.CannotCreateSuchOption e ) {
-            throw new CannotCreateSuchOption();
+            throw new CannotCreateThisOption();
         }
         register(container, opt);
         return opt;
     }
 
-    public static void bind(Option one, Option another) throws CannotBind {
+    public static void bind(final Option one, final Option another) throws CannotBind {
         one.bind(another);
     }
 
-    static public class CannotCreateSuchOption extends RuntimeException {
+    static public class CannotCreateThisOption extends RuntimeException {
         private static final long serialVersionUID = -5248825722401579070L;
     }
 

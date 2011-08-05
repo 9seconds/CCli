@@ -41,13 +41,13 @@ public class BooleanConverter {
 
 
     final boolean convert (final String value) throws CannotConvert {
-        String s = value.toLowerCase();
+        final String s = value.toLowerCase();
 
         if ( interpretAsString(s, positive) )
             return true;
         else if ( interpretAsString(s, negative) ) return false;
 
-        ValuePair result = interpretAsNumber(s);
+        final ValuePair result = interpretAsNumber(s);
         if ( result.converted ) return result.value;
 
         throw new CannotConvert();
@@ -56,7 +56,7 @@ public class BooleanConverter {
 
     final private ValuePair interpretAsNumber (final String value) {
         try {
-            byte result = Byte.valueOf(value);
+            final byte result = Byte.valueOf(value);
 
             if ( result == NUMERICAL_SIGN_TRUE )
                 return new ValuePair(true, true);

@@ -9,22 +9,18 @@ import org.aerialsounds.ccli.options.ParseableOption.CannotCreateSuchOption;
 
 final class CliFactory {
 
-    private CCli repository;
+    private final CCli repository;
 
-    public CliFactory(CCli repository) {
+    public CliFactory(final CCli repository) {
         this.repository = repository;
     }
 
-    public ParseableOption createOption(OptionTypes type, String customPrefix, String name, DataContainer container) throws CannotCreateSuchOption {
-        return OptionFactory.create(type, customPrefix, name, container);
-    }
-
-    public ParseableOption createOption(OptionTypes type, String name, DataContainer container) throws CannotCreateSuchOption {
+    public ParseableOption createOption(final OptionTypes type, final String name, final DataContainer container) throws CannotCreateSuchOption {
         return OptionFactory.create(type, name, container);
     }
 
-    public DataContainer createDataContainer(Object defaultValue, ValueTypes valueType, String help) {
-        DataContainer container = new DataContainer(repository);
+    public DataContainer createDataContainer(final Object defaultValue, final ValueTypes valueType, final String help) {
+        final DataContainer container = new DataContainer(repository);
 
         container.setDefaultValue(defaultValue);
         container.setValueType(valueType);

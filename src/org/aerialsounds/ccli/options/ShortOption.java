@@ -11,34 +11,45 @@ import org.aerialsounds.ccli.datacontainer.DataContainer;
 public class ShortOption
     extends ParseableOption {
 
-    static protected final Pattern inlineRegexp = Pattern.compile("\\D+((\\d+(\\.?\\d*[eE]?[\\+\\-]?0?\\d+)?)|(\\.?\\d*[eE]?[\\+\\-]?\\d+))$");
-    static protected final Pattern numbersRegexp = Pattern.compile("\\D*(\\d+)\\D*");
+    static protected final Pattern inlineRegexp;
+    static protected final Pattern numbersRegexp;
 
-    public ShortOption (OptionTypes optionType, String customPrefix, String name, DataContainer container) {
-        super(optionType, customPrefix, name, container);
+    static {
+        inlineRegexp = Pattern.compile("^[\\D&&[^\\.]]+((?:(?:\\d*\\.?\\d+)|(?:\\d+\\.?\\d*))\\d*(?:[eE][\\+\\-]?\\d+)?)[fd]?$", patternFlags);
+        numbersRegexp = Pattern.compile("\\D*(\\d+)\\D*", patternFlags);
+    }
+
+    public ShortOption (final OptionTypes optionType, final String name, final DataContainer container) {
+        super(optionType, name, container);
     }
 
     @Override
-    protected String extractInlineValue (String option) {
-        Matcher match = inlineRegexp.matcher(option);
-        return ( match.groupCount() > 0 )
+    protected String extractInlineValue (final String option) {
+        final Matcher match = inlineRegexp.matcher(option);
+        return ( match.find() )
             ? match.group(1)
             : null;
     }
 
     @Override
-    protected void checkCorrectness() throws CannotCreateSuchOption {
-        super.checkCorrectness();
-        if ( name.length() != 1 )
-            throw new CannotCreateSuchOption();
+    protected boolean isDataValid () {
+        return ( name.length() == 1 && super.isDataValid() );
     }
 
     @Override
-    public boolean haveInlineValue (String option) {
-        return ( getValueType().isNumber() && inlineRegexp.matcher(option).matches() );
+    public boolean appropriate(final String value) {
+        return (
+               super.appropriate(value)
+            || ( value.startsWith(fullName) && haveInlineValue(value) )
+        );
     }
 
-    static public boolean haveNumbers(String option) {
+    @Override
+    public boolean haveInlineValue (final String option) {
+        return ( getValueType().isNumber() && !haveInlineDelimeter(option) && inlineRegexp.matcher(option).matches() );
+    }
+
+    static public boolean haveNumbers(final String option) {
         return ( numbersRegexp.matcher(option).matches() );
     }
 

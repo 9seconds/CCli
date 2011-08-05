@@ -11,37 +11,54 @@ import org.aerialsounds.ccli.valueparsers.ValueParser;
 abstract public class ParseableOption
     extends AbstractOption {
 
-    final protected ValueParser parser;
+    protected final ValueParser parser;
 
-    static final private Pattern numericalRegexp = Pattern.compile("^\\d+$");
+    static protected final int patternFlags;
+    static public final String STRING_INLINE_DELIMETER;
+    static final private Pattern numericalRegexp;
 
-    public ParseableOption (OptionTypes optionType, String customPrefix, String name, DataContainer container) throws CannotCreateSuchOption {
-        super(optionType, customPrefix, name, container);
-        parser = getValueType().createParser();
-
-        checkCorrectness();
+    static {
+        patternFlags = Pattern.UNICODE_CASE;
+        STRING_INLINE_DELIMETER = "=".intern();
+        numericalRegexp = Pattern.compile("^\\d+$", patternFlags);
     }
 
-    protected void checkCorrectness () throws CannotCreateSuchOption {
-        if ( name.indexOf(STRING_INLINE_DELIMETER) != -1 )
+
+    public ParseableOption (final OptionTypes optionType, final String name, final DataContainer container) throws CannotCreateSuchOption {
+        super(optionType, name, container);
+        parser = getValueType().createParser();
+
+        if ( !isDataValid() )
             throw new CannotCreateSuchOption();
     }
 
-    public Object parse(String value) {
+    protected boolean isDataValid () {
+        return !haveInlineDelimeter(fullName);
+    }
+
+    public Object parse(final String value) {
         return parser.parse(value);
     }
 
-    public String getInlineValue(String option) {
+    public String getInlineValue(final String option) {
         return ( haveInlineValue(option) )
             ? extractInlineValue(option)
             : null;
     }
 
-    abstract public boolean haveInlineValue(String option);
-    abstract protected String extractInlineValue(String option);
+    public boolean appropriate(final String value) {
+        return value.equals(fullName);
+    }
 
-    static public boolean isPureNumerical(String option) {
+    abstract public boolean haveInlineValue(final String option);
+    abstract protected String extractInlineValue(final String option);
+
+    static public boolean isPureNumerical(final String option) {
         return numericalRegexp.matcher(option).matches();
+    }
+
+    static protected boolean haveInlineDelimeter(final String option) {
+        return ( option.indexOf(STRING_INLINE_DELIMETER) != -1 );
     }
 
 

@@ -9,24 +9,20 @@ import org.aerialsounds.ccli.options.ParseableOption.CannotCreateSuchOption;
 
 public final class OptionFactory {
 
-    static public ParseableOption create(OptionTypes optionType, String name, DataContainer container) throws CannotCreateSuchOption {
-        return create(optionType, AbstractOption.DEFAULT_CUSTOM_PREFIX, name, container);
-    }
-
-    static public ParseableOption create(OptionTypes optionType, String customPrefix, String name, DataContainer container) throws CannotCreateSuchOption {
-        if ( ParseableOption.isPureNumerical(name) )
-            return new NumericalOption(optionType, customPrefix, name, container);
+    static public ParseableOption create(final OptionTypes optionType, final String name, final DataContainer container) throws CannotCreateSuchOption {
+        if ( optionType == OptionTypes.SHORT && ParseableOption.isPureNumerical(name) )
+            return new NumericalOption(optionType, name, container);
 
         switch ( optionType ) {
             case SHORT:
-                return new ShortOption(optionType, customPrefix, name, container);
+                return new ShortOption(optionType, name, container);
 
             case LONG:
-                return new LongOption(optionType, customPrefix, name, container);
+                return new LongOption(optionType, name, container);
 
             case CUSTOM:
             default:
-                return new LongOption(optionType, customPrefix, name, container);
+                return new LongOption(optionType, name, container);
         }
     }
 

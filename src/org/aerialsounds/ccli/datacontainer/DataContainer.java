@@ -143,7 +143,7 @@ public class DataContainer {
         else if ( getClass() != obj.getClass() )
             return false;
 
-        DataContainer other = (DataContainer) obj;
+        final DataContainer other = (DataContainer) obj;
         return (isFieldsEqual(help, other.help) && isFieldsEqual(valueType, other.valueType) &&
             isFieldsEqual(value, other.value) && isFieldsEqual(defaultValue, other.defaultValue) && isFieldsEqual(
             repository,
@@ -177,17 +177,17 @@ public class DataContainer {
 
 
     public boolean isConsistent () {
-        boolean correctValueType = (valueType != null);
-        boolean correctDefaultValue = (
+        final boolean correctValueType = (valueType != null);
+        final boolean correctDefaultValue = (
                correctValueType
             && ( defaultValue != DEFAULT_VALUE )
             && valueType.isInstancedBy(defaultValue)
         );
-        boolean correctValue = (
+        final boolean correctValue = (
                correctValueType
             && ( ( value == DEFAULT_VALUE ) || ( value != DEFAULT_VALUE && valueType.isInstancedBy(value) ) )
         );
-        boolean correctDefined = (value == DEFAULT_VALUE ^ defined);
+        final boolean correctDefined = (value == DEFAULT_VALUE ^ defined);
 
         return (
                (help != null)

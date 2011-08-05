@@ -5,15 +5,15 @@ public enum OptionTypes {
     SHORT("-"),
     LONG("--"),
     CUSTOM("");
-    
+
     private String prefix;
-    
-    OptionTypes(String prefix) {
+
+    OptionTypes(final String prefix) {
         this.prefix = prefix;
     }
-    
+
     public String getPrefix() {
         return prefix;
     }
-    
+
 }
