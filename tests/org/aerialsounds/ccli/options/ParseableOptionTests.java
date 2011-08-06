@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.aerialsounds.ccli.OptionTypes;
 import org.aerialsounds.ccli.ValueTypes;
 import org.aerialsounds.ccli.datacontainer.DataContainer;
-import org.aerialsounds.ccli.options.ParseableOption.CannotCreateSuchOption;
+import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class ParseableOptionTests {
     class ParseableOptionStub extends ParseableOption {
 
         public ParseableOptionStub (OptionTypes optionType, String name, DataContainer container)
-            throws CannotCreateSuchOption {
+            throws DataIsNotValid {
             super(optionType, name, container);
         }
 
@@ -41,7 +41,7 @@ public class ParseableOptionTests {
         container.setValueType(ValueTypes.BOOLEAN);
     }
 
-    @Test(expected = CannotCreateSuchOption.class)
+    @Test(expected = DataIsNotValid.class)
     public void failedCreateWithInlinePrefixInName() {
         @SuppressWarnings ("unused")
         ParseableOption o = new ParseableOptionStub(OptionTypes.SHORT, "z", container);

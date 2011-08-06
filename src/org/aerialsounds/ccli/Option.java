@@ -1,4 +1,9 @@
+
+
+
 package org.aerialsounds.ccli;
+
+
 
 import org.aerialsounds.ccli.options.AbstractOption.CannotBind;
 
@@ -6,13 +11,28 @@ import org.aerialsounds.ccli.options.AbstractOption.CannotBind;
 
 public interface Option {
 
-    String getHelp();
-    String getName();
-    String getFullName();
-    OptionTypes getType();
-    Object getValue();
-    ValueTypes getValueType();
-    boolean isParsed();
-    void bind(Option other) throws CannotBind;
+
+    void bind (final Option other) throws CannotBind;
+
+
+    String getFullName ();
+
+
+    String getHelp ();
+
+
+    String getName ();
+
+
+    OptionTypes getType ();
+
+
+    Object getValue ();
+
+
+    ValueTypes getValueType ();
+
+
+    boolean isParsed ();
 
 }

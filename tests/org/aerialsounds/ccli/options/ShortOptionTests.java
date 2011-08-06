@@ -6,7 +6,7 @@ import org.aerialsounds.ccli.CCli;
 import org.aerialsounds.ccli.OptionTypes;
 import org.aerialsounds.ccli.ValueTypes;
 import org.aerialsounds.ccli.datacontainer.DataContainer;
-import org.aerialsounds.ccli.options.ParseableOption.CannotCreateSuchOption;
+import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class ShortOptionTests {
         container.setValueType(ValueTypes.INTEGER);
     }
 
-    @Test(expected = CannotCreateSuchOption.class)
+    @Test(expected = DataIsNotValid.class)
     public void incorrectOptionNaming() {
         @SuppressWarnings ("unused")
         ShortOption opt = new ShortOption(OptionTypes.SHORT, "value", container);

@@ -13,7 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-public class ValueParserTest {
+public class ValueParserTests {
 
     private static final String BOOLEAN_TRUE = "true";
     private static final String BIG_INT      = "1046943479208775920458790207774013104";

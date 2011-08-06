@@ -15,13 +15,14 @@ import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.datacontainer.DataContainer.DataContainerException;
 import org.aerialsounds.ccli.optionobservable.Observable;
 import org.aerialsounds.ccli.options.AbstractOption.CannotBind;
+import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 import org.aerialsounds.ccli.options.AbstractOption.NotCompatibleClasses;
 import org.junit.Before;
 import org.junit.Test;
 
 
 
-public class AbstractOptionsTest {
+public class AbstractOptionsTests {
 
     class AbstractOptionStub extends AbstractOption {
 
@@ -71,6 +72,18 @@ public class AbstractOptionsTest {
         o = new AbstractOptionStub(OptionTypes.CUSTOM, "INLINE", container);
 
         o.dispose();
+    }
+
+    @Test(expected = DataIsNotValid.class)
+    public void notValidDataWithNull() {
+        @SuppressWarnings ("unused")
+        AbstractOption o = new AbstractOptionStub(OptionTypes.SHORT, null, container);
+    }
+
+    @Test(expected = DataIsNotValid.class)
+    public void notValidDataWithEmptyString() {
+        @SuppressWarnings ("unused")
+        AbstractOption o = new AbstractOptionStub(OptionTypes.SHORT, "", container);
     }
 
     @Test
@@ -191,7 +204,7 @@ public class AbstractOptionsTest {
     @Test
     public void bindingWithUpdating() {
         AbstractOption a = new AbstractOptionStub(OptionTypes.SHORT, "fno-rtti", container);
-        AbstractOption b = new AbstractOptionStub(OptionTypes.LONG, "vbr-new", new DataContainer(null));
+        AbstractOption b = new AbstractOptionStub(OptionTypes.LONG, "vbr-new", new DataContainer(ccliStub));
 
         assertEquals(0, updateValue);
         a.bind(b);

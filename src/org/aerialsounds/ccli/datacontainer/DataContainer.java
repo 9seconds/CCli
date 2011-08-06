@@ -13,7 +13,8 @@ import org.aerialsounds.ccli.ValueTypes;
 
 
 
-public class DataContainer {
+public class DataContainer
+    implements Cloneable {
 
 
     static public class DataContainerException
@@ -52,29 +53,14 @@ public class DataContainer {
     }
 
 
-    static protected Collection<SyncStrategies> syncStrategies;
-    static private DataContainer                firstBackup;
-    static private DataContainer                secondBackup;
-    static protected Object                     DEFAULT_VALUE = null;
+    static protected final Collection<SyncStrategies> syncStrategies;
+    static private final DataContainer                firstBackup;
+    static private final DataContainer                secondBackup;
 
     static {
-        initBackups();
-        initStrategies();
-    }
+        firstBackup = new DataContainer();
+        secondBackup = new DataContainer();
 
-    static private void backup (final DataContainer first, final DataContainer second) {
-        firstBackup.setFrom(first);
-        secondBackup.setFrom(second);
-    }
-
-
-    static private void initBackups () {
-        firstBackup = new DataContainer(null);
-        secondBackup = new DataContainer(null);
-    }
-
-
-    static private void initStrategies () {
         syncStrategies = new LinkedList<SyncStrategies>();
         syncStrategies.add(new SyncValueType());
         syncStrategies.add(new SyncDefaultValue());
@@ -84,9 +70,14 @@ public class DataContainer {
         syncStrategies.add(new SyncDefined());
     }
 
+    static private void backup (final DataContainer first, final DataContainer second) {
+        firstBackup.setFrom(first);
+        secondBackup.setFrom(second);
+    }
+
 
     static protected boolean isFieldsEqual (final Object one, final Object another) {
-        return ((one == another) || (one == null && another == null) || (one != null && another != null && one.equals(another)));
+        return one == another || one == null && another == null || one != null && another != null && one.equals(another);
     }
 
 
@@ -114,8 +105,8 @@ public class DataContainer {
 
     protected String     help;
     protected ValueTypes valueType;
-    protected Object     value        = DEFAULT_VALUE;
-    protected Object     defaultValue = DEFAULT_VALUE;
+    protected Object     value;
+    protected Object     defaultValue;
     protected CCli       repository;
     protected boolean    defined;
 
@@ -131,7 +122,7 @@ public class DataContainer {
 
 
     public void dropDefined () {
-        value = DEFAULT_VALUE;
+        value = null;
         defined = false;
     }
 
@@ -144,29 +135,39 @@ public class DataContainer {
             return false;
 
         final DataContainer other = (DataContainer) obj;
-        return (isFieldsEqual(help, other.help) && isFieldsEqual(valueType, other.valueType) &&
-            isFieldsEqual(value, other.value) && isFieldsEqual(defaultValue, other.defaultValue) && isFieldsEqual(
-            repository,
-            other.repository));
+        return (
+               isFieldsEqual(help,         other.help)
+            && isFieldsEqual(valueType,    other.valueType)
+            && isFieldsEqual(value,        other.value)
+            && isFieldsEqual(defaultValue, other.defaultValue)
+            && isFieldsEqual(repository,   other.repository)
+        );
+    }
+
+    @Override
+    public Object clone () {
+        DataContainer container = new DataContainer();
+        container.setFrom(this);
+        return container;
     }
 
 
-    public Object getDefaultValue () {
+    final public Object getDefaultValue () {
         return defaultValue;
     }
 
 
-    public String getHelp () {
+    final public String getHelp () {
         return help;
     }
 
 
-    public CCli getRepository () {
+    final public CCli getRepository () {
         return repository;
     }
 
 
-    public Object getValue () {
+    final public Object getValue () {
         return value;
     }
 
@@ -179,28 +180,23 @@ public class DataContainer {
     public boolean isConsistent () {
         final boolean correctValueType = (valueType != null);
         final boolean correctDefaultValue = (
-               correctValueType
-            && ( defaultValue != DEFAULT_VALUE )
-            && valueType.isInstancedBy(defaultValue)
+            correctValueType && defaultValue != null && valueType.isInstancedBy(defaultValue)
         );
         final boolean correctValue = (
-               correctValueType
-            && ( ( value == DEFAULT_VALUE ) || ( value != DEFAULT_VALUE && valueType.isInstancedBy(value) ) )
+            correctValueType && ( value == null || value != null && valueType.isInstancedBy(value) )
         );
-        final boolean correctDefined = (value == DEFAULT_VALUE ^ defined);
 
         return (
                (help != null)
             && (repository != null)
-            && correctValueType
             && correctDefaultValue
             && correctValue
-            && correctDefined
+            && ( value == null ^ defined )
         );
     }
 
 
-    public boolean isDefined () {
+    final public boolean isDefined () {
         return defined;
     }
 
@@ -229,9 +225,12 @@ public class DataContainer {
 
     public void setValue (final Object value) {
         this.value = value;
-        defined = (value != null);
+        defined = value != null;
     }
 
+    public void dispose() {
+        repository = null;
+    }
 
     public void setValueType (final ValueTypes valueType) {
         this.valueType = valueType;

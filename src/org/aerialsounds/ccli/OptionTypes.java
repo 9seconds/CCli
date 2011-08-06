@@ -1,18 +1,26 @@
+
+
+
 package org.aerialsounds.ccli;
+
+
 
 public enum OptionTypes {
 
-    SHORT("-"),
-    LONG("--"),
-    CUSTOM("");
+    SHORT  ("-"),
+    LONG   ("--"),
+    CUSTOM ("");
 
-    private String prefix;
 
-    OptionTypes(final String prefix) {
+    private final String prefix;
+
+
+    OptionTypes (final String prefix) {
         this.prefix = prefix;
     }
 
-    public String getPrefix() {
+
+    final public String getPrefix () {
         return prefix;
     }
 

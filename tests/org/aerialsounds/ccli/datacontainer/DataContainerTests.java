@@ -1,12 +1,7 @@
 package org.aerialsounds.ccli.datacontainer;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,7 +18,7 @@ import org.junit.Test;
 
 
 
-public class DataContainerTest {
+public class DataContainerTests {
 
     @Test
     public void create() {
@@ -183,18 +178,7 @@ public class DataContainerTest {
         DataContainer.synchronize(one, another);
         assertEquals(one, another);
         assertEquals(ValueTypes.INTEGER, one.getValueType());
-
         assertNull(one.getRepository());
-
-        CCli repo = new CCli(null);
-        one = new DataContainer(repo);
-        DataContainer.synchronize(one, another);
-        assertEquals(one, another);
-        assertEquals("help", one.getHelp());
-        assertEquals(Integer.MAX_VALUE, one.getDefaultValue());
-        assertEquals(Double.POSITIVE_INFINITY, one.getValue());
-        assertEquals(ValueTypes.INTEGER, one.getValueType());
-        assertEquals(repo, another.getRepository());
     }
 
     @Test(expected = OverrideRepository.class)
@@ -307,7 +291,8 @@ public class DataContainerTest {
 
     @Test
     public void checkConsistency() {
-        DataContainer one = new DataContainer();
+        CCli repo = new CCli(null);
+        DataContainer one = new DataContainer(repo);
 
         assertFalse(one.isConsistent());
 
@@ -324,9 +309,9 @@ public class DataContainerTest {
         assertFalse(one.isConsistent());
 
         one.setValueType(ValueTypes.BIG_INTEGER);
-        assertFalse(one.isConsistent());
+        assertTrue(one.isConsistent());
 
-        DataContainer another = new DataContainer(new CCli(null));
+        DataContainer another = new DataContainer(repo);
 
         DataContainer.synchronize(one, another);
         assertTrue(another.isConsistent());

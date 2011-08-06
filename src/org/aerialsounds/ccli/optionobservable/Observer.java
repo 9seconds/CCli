@@ -1,10 +1,13 @@
-package org.aerialsounds.ccli.optionobservable;
 
+
+
+package org.aerialsounds.ccli.optionobservable;
 
 
 
 public interface Observer {
 
-    public void update(Observable initiator, Object initiated);
+
+    public void update (final Observable initiator, final Object initiated);
 
 }

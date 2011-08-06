@@ -1,4 +1,9 @@
+
+
+
 package org.aerialsounds.ccli;
+
+
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -24,58 +29,32 @@ import org.aerialsounds.ccli.valueparsers.ValueParser;
 
 
 
-
 public enum ValueTypes {
-    ATOMIC_BOOLEAN(AtomicBoolean.class),
-    ATOMIC_INTEGER(AtomicInteger.class),
-    ATOMIC_LONG(AtomicLong.class),
-    BIG_DECIMAL(BigDecimal.class),
-    BIG_INTEGER(BigInteger.class),
-    BOOLEAN(Boolean.class),
-    BYTE(Byte.class),
-    CHAR(Character.class),
-    DOUBLE(Double.class),
-    FLOAT(Float.class),
-    INTEGER(Integer.class),
-    LONG(Long.class),
-    SHORT(Short.class),
-    STRING(String.class);
+    ATOMIC_BOOLEAN (AtomicBoolean.class),
+    ATOMIC_INTEGER (AtomicInteger.class),
+    ATOMIC_LONG    (AtomicLong.class),
+    BIG_DECIMAL    (BigDecimal.class),
+    BIG_INTEGER    (BigInteger.class),
+    BOOLEAN        (Boolean.class),
+    BYTE           (Byte.class),
+    CHAR           (Character.class),
+    DOUBLE         (Double.class),
+    FLOAT          (Float.class),
+    INTEGER        (Integer.class),
+    LONG           (Long.class),
+    SHORT          (Short.class),
+    STRING         (String.class);
+
 
     private final Class<?> type;
 
-    private ValueTypes(final Class<?> type) {
+
+    private ValueTypes (final Class<?> type) {
         this.type = type;
     }
 
-    public boolean isInstancedBy(final Object o) {
-        return type.isInstance(o);
-    }
 
-    public boolean isBoolean() {
-        return ( this == BOOLEAN || this == ATOMIC_BOOLEAN );
-    }
-
-    public boolean isString() {
-        return ( this == STRING || this == CHAR );
-    }
-
-    public boolean isInt() {
-        return ( this == INTEGER || this == BYTE || this == SHORT || this == LONG || this == BIG_INTEGER || this == ATOMIC_INTEGER || this == ATOMIC_LONG );
-    }
-
-    public boolean isFloat() {
-        return ( this == DOUBLE || this == FLOAT || this == BIG_DECIMAL );
-    }
-
-    public boolean isAtomic() {
-        return ( this == ATOMIC_BOOLEAN || this == ATOMIC_INTEGER || this == ATOMIC_LONG );
-    }
-
-    public boolean isNumber() {
-        return ( isInt() || isFloat() );
-    }
-
-    public ValueParser createParser() {
+    public ValueParser createParser () {
         switch ( this ) {
             case ATOMIC_BOOLEAN:
                 return new AtomicBooleanParser();
@@ -120,5 +99,61 @@ public enum ValueTypes {
             default:
                 return new StringParser();
         }
+    }
+
+    final public boolean isInstancedBy (final Object o) {
+        return type.isInstance(o);
+    }
+
+
+    public boolean isAtomic () {
+        return (
+               this == ATOMIC_BOOLEAN
+            || this == ATOMIC_INTEGER
+            || this == ATOMIC_LONG
+        );
+    }
+
+
+    public boolean isBoolean () {
+        return (
+               this == BOOLEAN
+            || this == ATOMIC_BOOLEAN
+        );
+    }
+
+
+    public boolean isFloat () {
+        return (
+               this == DOUBLE
+            || this == FLOAT
+            || this == BIG_DECIMAL
+        );
+    }
+
+
+    public boolean isInt () {
+        return (
+               this == INTEGER
+            || this == BYTE
+            || this == SHORT
+            || this == LONG
+            || this == BIG_INTEGER
+            || this == ATOMIC_INTEGER
+            || this == ATOMIC_LONG
+        );
+    }
+
+
+    public boolean isNumber () {
+        return ( isInt() || isFloat() );
+    }
+
+
+    public boolean isString () {
+        return (
+               this == STRING
+            || this == CHAR
+        );
     }
 }

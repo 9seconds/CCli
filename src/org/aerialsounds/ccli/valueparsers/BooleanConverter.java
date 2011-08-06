@@ -11,18 +11,14 @@ public class BooleanConverter {
 
     protected class CannotConvert
         extends RuntimeException {
-
-
         private static final long serialVersionUID = 5652929665240085597L;
     }
 
 
     protected class ValuePair {
 
-
         final public boolean value;
         final public boolean converted;
-
 
         public ValuePair (final boolean value, final boolean converted) {
             this.value = value;
@@ -36,8 +32,8 @@ public class BooleanConverter {
     final static public byte      NUMERICAL_SIGN_TRUE  = 1;
     final static public byte      NUMERICAL_SIGN_FALSE = 0;
 
-    final static public String TRUE = String.valueOf(NUMERICAL_SIGN_TRUE);
-    final static public String FALSE = String.valueOf(NUMERICAL_SIGN_FALSE);
+    final static public String TRUE = Boolean.TRUE.toString();
+    final static public String FALSE = Boolean.FALSE.toString();
 
 
     final boolean convert (final String value) throws CannotConvert {
@@ -45,10 +41,12 @@ public class BooleanConverter {
 
         if ( interpretAsString(s, positive) )
             return true;
-        else if ( interpretAsString(s, negative) ) return false;
+        else if ( interpretAsString(s, negative) )
+            return false;
 
         final ValuePair result = interpretAsNumber(s);
-        if ( result.converted ) return result.value;
+        if ( result.converted )
+            return result.value;
 
         throw new CannotConvert();
     }
@@ -60,11 +58,10 @@ public class BooleanConverter {
 
             if ( result == NUMERICAL_SIGN_TRUE )
                 return new ValuePair(true, true);
-            else if ( result == NUMERICAL_SIGN_FALSE ) return new ValuePair(false, true);
+            else if ( result == NUMERICAL_SIGN_FALSE )
+                return new ValuePair(false, true);
         }
-        catch ( Exception e ) {
-
-        }
+        catch ( Exception e ) { }
 
         return new ValuePair(false, false);
     }

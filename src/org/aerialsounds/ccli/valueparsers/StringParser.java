@@ -11,7 +11,7 @@ final public class StringParser
 
     @Override
     public Object parse (final String value) {
-        return (value != null && value != "")
+        return ( value != null && value != "" )
             ? value
             : null;
     }

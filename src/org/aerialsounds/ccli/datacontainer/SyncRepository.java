@@ -16,11 +16,8 @@ final class SyncRepository
 
     @Override
     public void sync (final DataContainer first, final DataContainer second) throws DataContainerException {
-        if ( first.repository == null )
-            first.repository = second.repository;
-        else if ( second.repository == null )
-            second.repository = first.repository;
-        else if ( !first.repository.equals(second.repository) ) throw new OverrideRepository();
+        if ( first.repository != second.repository )
+            throw new OverrideRepository();
     }
 
 }
