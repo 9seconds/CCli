@@ -26,6 +26,7 @@ package org.aerialsounds.ccli.options;
 
 
 
+import org.aerialsounds.ccli.CannotBind;
 import org.aerialsounds.ccli.Option;
 import org.aerialsounds.ccli.OptionTypes;
 import org.aerialsounds.ccli.ValueTypes;
@@ -43,11 +44,6 @@ abstract public class AbstractOption
     static public class DataIsNotValid
         extends RuntimeException {
         private static final long serialVersionUID = -3486882571119501655L;
-    }
-
-    static public class CannotBind
-        extends RuntimeException {
-        private static final long serialVersionUID = 9035409865724452061L;
     }
 
 

@@ -42,7 +42,6 @@ import org.aerialsounds.ccli.options.AbstractOption;
 import org.aerialsounds.ccli.options.LongOption;
 import org.aerialsounds.ccli.options.NumericalOption;
 import org.aerialsounds.ccli.options.ShortOption;
-import org.aerialsounds.ccli.options.AbstractOption.CannotBind;
 import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 import org.junit.Test;
 

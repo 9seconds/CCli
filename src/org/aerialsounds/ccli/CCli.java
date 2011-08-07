@@ -40,7 +40,6 @@ import org.aerialsounds.ccli.optionobservable.Observer;
 import org.aerialsounds.ccli.options.AbstractOption;
 import org.aerialsounds.ccli.options.ParseableOption;
 import org.aerialsounds.ccli.options.ShortOption;
-import org.aerialsounds.ccli.options.AbstractOption.CannotBind;
 import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 import org.aerialsounds.ccli.valueparsers.BooleanConverter;
 

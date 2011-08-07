@@ -29,13 +29,13 @@ import java.math.BigInteger;
 import java.util.HashSet;
 
 import org.aerialsounds.ccli.CCli;
+import org.aerialsounds.ccli.CannotBind;
 import org.aerialsounds.ccli.Option;
 import org.aerialsounds.ccli.OptionTypes;
 import org.aerialsounds.ccli.ValueTypes;
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.datacontainer.DataContainer.DataContainerException;
 import org.aerialsounds.ccli.optionobservable.Observable;
-import org.aerialsounds.ccli.options.AbstractOption.CannotBind;
 import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 import org.aerialsounds.ccli.options.AbstractOption.NotCompatibleClasses;
 import org.junit.Before;

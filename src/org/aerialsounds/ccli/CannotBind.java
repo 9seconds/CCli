@@ -26,30 +26,7 @@ package org.aerialsounds.ccli;
 
 
 
-public interface Option {
-
-
-    void bind (final Option other) throws CannotBind;
-
-
-    String getFullName ();
-
-
-    String getHelp ();
-
-
-    String getName ();
-
-
-    OptionTypes getType ();
-
-
-    Object getValue ();
-
-
-    ValueTypes getValueType ();
-
-
-    boolean isParsed ();
-
+public class CannotBind
+    extends RuntimeException {
+    private static final long serialVersionUID = 9035409865724452061L;
 }
