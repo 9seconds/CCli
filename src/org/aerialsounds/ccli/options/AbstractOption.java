@@ -43,7 +43,8 @@ abstract public class AbstractOption
     protected       DataContainer backuped;
 
 
-    public AbstractOption (final OptionTypes optionType, final String name, final DataContainer container) {
+    public AbstractOption (final OptionTypes optionType, final String name, final DataContainer container)
+        throws DataIsNotValid {
         this.name       = name;
         this.optionType = optionType;
         fullName        = optionType.getPrefix() + name;

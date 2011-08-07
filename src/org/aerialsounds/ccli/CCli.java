@@ -49,12 +49,12 @@ public class CCli
         private static final long serialVersionUID = -6990780110727348311L;
     }
 
-    static public class UnexpectedApplicationArgument
+    static public class UnexpectedOption
         extends RuntimeException {
 
         private static final long serialVersionUID = -7689966940656377554L;
 
-        public UnexpectedApplicationArgument (final String currentArgument) {
+        public UnexpectedOption (final String currentArgument) {
             super(currentArgument);
         }
 
@@ -94,9 +94,18 @@ public class CCli
     protected final Collection<String>                     appArguments;
     protected       boolean                                parsed;
 
+    private   final CliHelpGenerator                       helpGenerator;
+
 
     public CCli (final String[] args) {
-        this.args    = args;
+        this(args, new CliHelpGenerator());
+    }
+
+
+    public CCli (final String[] args, final CliHelpGenerator helpGenerator) {
+        this.args          = args;
+        this.helpGenerator = helpGenerator;
+
         factory      = new CliFactory(this);
         containers   = new HashMap<DataContainer,Set<AbstractOption>>();
         options      = new LinkedList<ParseableOption>();
@@ -107,7 +116,7 @@ public class CCli
     protected void clearParsedData () {
         appArguments.clear();
 
-        final Set<DataContainer> conainersSet = containers.keySet();
+        final Iterable<DataContainer> conainersSet = containers.keySet();
         for ( DataContainer container : conainersSet )
             container.dropDefined();
 
@@ -126,10 +135,10 @@ public class CCli
 
     public Option createOption (
         final OptionTypes type,
-        final String name,
-        final Object defaultValue,
-        final ValueTypes valueType,
-        final String help
+        final String      name,
+        final Object      defaultValue,
+        final ValueTypes  valueType,
+        final String      help
     )
     throws CannotCreateOption {
         final DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
@@ -182,7 +191,7 @@ public class CCli
 
                 if ( option != null ) {
                     if ( !appArguments.isEmpty() )
-                        interruptParsing(new UnexpectedApplicationArgument(current));
+                        interruptParsing(new UnexpectedOption(current));
 
                     inlineValue = option.getInlineValue(current);
                     parsedValue = null;
@@ -255,7 +264,7 @@ public class CCli
 
 
     private boolean isContainersConsistent () {
-        final Set<DataContainer> containersSet = containers.keySet();
+        final Iterable<DataContainer> containersSet = containers.keySet();
         for ( DataContainer container : containersSet )
             if ( !container.isConsistent() )
                 return false;
@@ -293,8 +302,8 @@ public class CCli
 
 
     protected void removeContainer (final AbstractOption option) {
-        final DataContainer container          = option.getContainer();
-        final Set<AbstractOption> containerSet = containers.get(container);
+        final DataContainer container                 = option.getContainer();
+        final Collection<AbstractOption> containerSet = containers.get(container);
         if ( containerSet != null ) {
             containerSet.remove(option);
             if ( containerSet.isEmpty() )
@@ -306,10 +315,10 @@ public class CCli
     @Override
     public void update (final Observable initiator, final Object initiated) {
         if ( initiator != initiated && initiator instanceof AbstractOption && initiated instanceof AbstractOption ) {
-            final DataContainer       firstContainer  = ((AbstractOption)initiator).getContainer();
-            final DataContainer       secondContainer = ((AbstractOption)initiated).getContainer();
-            final Set<AbstractOption> firstSet        = containers.get(firstContainer);
-            final Set<AbstractOption> secondSet       = containers.get(secondContainer);
+            final DataContainer              firstContainer  = ((AbstractOption)initiator).getContainer();
+            final DataContainer              secondContainer = ((AbstractOption)initiated).getContainer();
+            final Collection<AbstractOption> firstSet        = containers.get(firstContainer);
+            final Collection<AbstractOption> secondSet       = containers.get(secondContainer);
 
             if ( firstSet != null && secondSet != null ) {
                 firstSet.addAll(secondSet);
@@ -318,6 +327,10 @@ public class CCli
                 containers.remove(secondContainer);
             }
         }
+    }
+
+    final public String generateHelp () {
+        return helpGenerator.generate(containers.values());
     }
 
 }

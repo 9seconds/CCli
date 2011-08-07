@@ -54,11 +54,11 @@ public class DataContainer
 
 
     static protected final Collection<SyncStrategies> syncStrategies;
-    static private final DataContainer                firstBackup;
-    static private final DataContainer                secondBackup;
+    static private   final DataContainer              firstBackup;
+    static private   final DataContainer              secondBackup;
 
     static {
-        firstBackup = new DataContainer();
+        firstBackup  = new DataContainer();
         secondBackup = new DataContainer();
 
         syncStrategies = new LinkedList<SyncStrategies>();
@@ -77,7 +77,11 @@ public class DataContainer
 
 
     static protected boolean isFieldsEqual (final Object one, final Object another) {
-        return one == another || one == null && another == null || one != null && another != null && one.equals(another);
+        return (
+               one == another
+            || one == null && another == null
+            || one != null && another != null && one.equals(another)
+        );
     }
 
 
@@ -122,7 +126,7 @@ public class DataContainer
 
 
     public void dropDefined () {
-        value = null;
+        value   = null;
         defined = false;
     }
 
@@ -178,11 +182,11 @@ public class DataContainer
 
 
     public boolean isConsistent () {
-        final boolean correctValueType = (valueType != null);
+        final boolean correctValueType    = (valueType != null);
         final boolean correctDefaultValue = (
             correctValueType && defaultValue != null && valueType.isInstancedBy(defaultValue)
         );
-        final boolean correctValue = (
+        final boolean correctValue        = (
             correctValueType && ( value == null || value != null && valueType.isInstancedBy(value) )
         );
 
@@ -208,12 +212,12 @@ public class DataContainer
 
     protected void setFrom (final DataContainer container) {
         if ( container != this ) {
-            help = container.help;
-            valueType = container.valueType;
-            value = container.value;
+            help         = container.help;
+            valueType    = container.valueType;
+            value        = container.value;
             defaultValue = container.defaultValue;
-            repository = container.repository;
-            defined = container.defined;
+            repository   = container.repository;
+            defined      = container.defined;
         }
     }
 

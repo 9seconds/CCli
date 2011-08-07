@@ -3,9 +3,16 @@ package org.aerialsounds.ccli;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.aerialsounds.ccli.CCli.CannotCreateOption;
+import org.aerialsounds.ccli.CCli.CannotParse;
+import org.aerialsounds.ccli.CCli.DataIsNotConsistent;
 import org.aerialsounds.ccli.CCli.HaveSuchOption;
+import org.aerialsounds.ccli.CCli.IncorrectParsingOfOption;
+import org.aerialsounds.ccli.CCli.NothingToParse;
+import org.aerialsounds.ccli.CCli.UnexpectedEndOfArgumentList;
+import org.aerialsounds.ccli.CCli.UnexpectedOption;
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.options.AbstractOption;
 import org.aerialsounds.ccli.options.LongOption;
@@ -338,6 +345,172 @@ public class CCliTests {
         assertEquals(true, opt5.getValue());
         assertEquals(true, opt6.getValue());
         assertEquals(0.0002d, opt7.getValue());
+    }
+
+    @Test
+    public void mixedOptions() {
+        String[] args = {"-ni", "-i", "-DINLINE=false", "--vbr-new", "-zxvcf", "-DINLINE", "-f", "0", "--verbose", "10", "-g.0002", "file", "foo.c"};
+
+        CCli rep = new CCli(args);
+        Option opt1 = rep.createOption(OptionTypes.SHORT, "n", false, ValueTypes.BOOLEAN, "Stereo options");
+        Option opt2 = rep.createOption(OptionTypes.SHORT, "i", false, ValueTypes.BOOLEAN, "Quality options");
+        Option opt3 = rep.createOption(OptionTypes.SHORT, "z", false, ValueTypes.BOOLEAN, "Stereo options");
+        Option opt4 = rep.createOption(OptionTypes.SHORT, "x", false, ValueTypes.BOOLEAN, "Quality options");
+        Option opt5 = rep.createOption(OptionTypes.SHORT, "v", false, ValueTypes.BOOLEAN, "Stereo options");
+        Option opt6 = rep.createOption(OptionTypes.SHORT, "f", false, ValueTypes.BOOLEAN, "Quality options");
+        Option opt7 = rep.createOption(OptionTypes.SHORT, "c", false, ValueTypes.BOOLEAN, "Stereo options");
+        Option opt8 = rep.createOption(OptionTypes.SHORT, "g", 0.0, ValueTypes.DOUBLE, "Quality options");
+        Option opt9 = rep.createOption(OptionTypes.CUSTOM, "-DINLINE", false, ValueTypes.BOOLEAN, "Quality options");
+        Option opt10 = rep.createOption(OptionTypes.LONG, "verbose", 13L, ValueTypes.LONG, "Quality options");
+        Option opt11 = rep.createOption(OptionTypes.LONG, "filled", 11L, ValueTypes.LONG, "Quality options");
+        Option opt12 = rep.createOption(OptionTypes.LONG, "vbr-new", new AtomicBoolean(false), ValueTypes.ATOMIC_BOOLEAN, "Quality options");
+        rep.parse();
+
+        String[] a = {"file", "foo.c"};
+        int i=0;
+        Iterator<String> appArgs = rep.getApplicationArguments();
+        while ( appArgs.hasNext() ) {
+            assertTrue(appArgs.next().equals(a[i++]));
+        }
+
+        assertEquals(true, opt1.getValue());
+        assertEquals(true, opt2.getValue());
+        assertEquals(true, opt3.getValue());
+        assertEquals(true, opt4.getValue());
+        assertEquals(true, opt5.getValue());
+        assertEquals(false, opt6.getValue());
+        assertEquals(true, opt7.getValue());
+        assertEquals(0.0002d, opt8.getValue());
+        assertEquals(true, opt9.getValue());
+        assertEquals(10L, opt10.getValue());
+        assertEquals(11L, opt11.getValue());
+        assertEquals(true, ((AtomicBoolean)opt12.getValue()).get());
+    }
+
+    @Test(expected = UnexpectedOption.class)
+    public void unexpectedOption() throws Throwable {
+        String[] args = {"-ni", "-i", "unexpected", "-z", "true", "file", "foo.c"};
+
+        CCli rep = new CCli(args);
+        @SuppressWarnings ("unused")
+        Option opt1 = rep.createOption(OptionTypes.SHORT, "n", false, ValueTypes.BOOLEAN, "Stereo options");
+        @SuppressWarnings ("unused")
+        Option opt2 = rep.createOption(OptionTypes.SHORT, "i", false, ValueTypes.BOOLEAN, "Quality options");
+        @SuppressWarnings ("unused")
+        Option opt3 = rep.createOption(OptionTypes.SHORT, "z", false, ValueTypes.BOOLEAN, "Stereo options");
+        try {
+            rep.parse();
+            fail();
+        }
+        catch ( CannotParse e ) {
+            Throwable cause = e.getCause();
+            if ( !cause.getMessage().equals("-z") )
+                fail();
+            throw cause;
+        }
+    }
+
+    @Test(expected = UnexpectedEndOfArgumentList.class)
+    public void unexpectedEndOfArgList() throws Throwable {
+        String[] args = {"-ni", "-i", "-z", "awesome", "-z"};
+
+        CCli rep = new CCli(args);
+        @SuppressWarnings ("unused")
+        Option opt1 = rep.createOption(OptionTypes.SHORT, "n", false, ValueTypes.BOOLEAN, "Stereo options");
+        @SuppressWarnings ("unused")
+        Option opt2 = rep.createOption(OptionTypes.SHORT, "i", false, ValueTypes.BOOLEAN, "Quality options");
+        @SuppressWarnings ("unused")
+        Option opt3 = rep.createOption(OptionTypes.SHORT, "z", "", ValueTypes.STRING, "Stereo options");
+        try {
+            rep.parse();
+            fail();
+        }
+        catch ( CannotParse e ) {
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = IncorrectParsingOfOption.class)
+    public void incorrectParsingOfOption() throws Throwable {
+        String[] args = {"-ni", "-i", "-z", "awesome", "-z"};
+
+        CCli rep = new CCli(args);
+        @SuppressWarnings ("unused")
+        Option opt1 = rep.createOption(OptionTypes.SHORT, "n", false, ValueTypes.BOOLEAN, "Stereo options");
+        @SuppressWarnings ("unused")
+        Option opt2 = rep.createOption(OptionTypes.SHORT, "i", false, ValueTypes.BOOLEAN, "Quality options");
+        @SuppressWarnings ("unused")
+        Option opt3 = rep.createOption(OptionTypes.SHORT, "z", "", ValueTypes.INTEGER, "Stereo options");
+        try {
+            rep.parse();
+            fail();
+        }
+        catch ( CannotParse e ) {
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = DataIsNotConsistent.class)
+    public void inconsistentData() throws Throwable {
+        String[] args = {"-ni", "-i", "-z", "awesome"};
+
+        CCli rep = new CCli(args);
+        @SuppressWarnings ("unused")
+        Option opt1 = rep.createOption(OptionTypes.SHORT, "n", false, ValueTypes.BOOLEAN, "Stereo options");
+        @SuppressWarnings ("unused")
+        Option opt2 = rep.createOption(OptionTypes.SHORT, "i", false, ValueTypes.BOOLEAN, "Quality options");
+        @SuppressWarnings ("unused")
+        Option opt3 = rep.createOption(OptionTypes.SHORT, "z", 10L, ValueTypes.STRING, "Stereo options");
+        try {
+            rep.parse();
+            fail();
+        }
+        catch ( CannotParse e ) {
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = NothingToParse.class)
+    public void nothingToParse() throws Throwable {
+        String[] args = null;
+
+        CCli rep = new CCli(args);
+        @SuppressWarnings ("unused")
+        Option opt1 = rep.createOption(OptionTypes.SHORT, "n", false, ValueTypes.BOOLEAN, "Stereo options");
+        @SuppressWarnings ("unused")
+        Option opt2 = rep.createOption(OptionTypes.SHORT, "i", false, ValueTypes.BOOLEAN, "Quality options");
+        @SuppressWarnings ("unused")
+        Option opt3 = rep.createOption(OptionTypes.SHORT, "z", 10L, ValueTypes.STRING, "Stereo options");
+        try {
+            rep.parse();
+            fail();
+        }
+        catch ( CannotParse e ) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testHelp() {
+        String[] args = {"-v", "10", "--q=true", "-v0", "-v12", "--q", "file", "foo.c"};
+
+        CCli rep = new CCli(args);
+
+        @SuppressWarnings ("unused")
+        AbstractOption o10 = (AbstractOption) rep.createOption(OptionTypes.SHORT, "r", 0, ValueTypes.INTEGER, "Int opt");
+        AbstractOption o11 = (AbstractOption) rep.createOption(OptionTypes.LONG, "recurse", 0, ValueTypes.INTEGER, "Int opt");
+        AbstractOption o12 = (AbstractOption) rep.createOption(OptionTypes.CUSTOM, "-Frec", 0, ValueTypes.INTEGER, "Int opt");
+        @SuppressWarnings ("unused")
+        AbstractOption o20 = (AbstractOption) rep.createOption(OptionTypes.SHORT, "f", 0, ValueTypes.INTEGER, "Int opt");
+        AbstractOption o21 = (AbstractOption) rep.createOption(OptionTypes.LONG, "flip", 0, ValueTypes.INTEGER, "Int opt");
+        AbstractOption o22 = (AbstractOption) rep.createOption(OptionTypes.CUSTOM, "-Fflp", 0, ValueTypes.INTEGER, "Int opt");
+        @SuppressWarnings ("unused")
+        AbstractOption o30 = (AbstractOption) rep.createOption(OptionTypes.LONG, "vbr-new", 0, ValueTypes.INTEGER, "Int opt");
+
+        o11.bind(o12);
+        o22.bind(o21);
+
+        assertNotNull(rep.generateHelp());
     }
 
 }
