@@ -29,33 +29,60 @@ package org.aerialsounds.ccli.optionobservable;
 public abstract class Observable {
 
 
+
+// ===============================================================================================================
+// F I E L D S
+// ===============================================================================================================
+
+
+
     private Observer observer;
 
 
-    final protected void deleteObserver () {
-        observer = null;
-    }
 
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
 
-    final protected void notifyObserver (final Object initiated) {
-        if ( observer != null )
-            observer.update(this, initiated);
-    }
-
-
-    final protected void registerObserver (final Observer repository) {
-        observer = repository;
-    }
 
 
     @Override
-    public boolean equals (final Object o) {
+    public boolean
+    equals (final Object o) {
         if ( this == o )
             return true;
         else if ( !(o instanceof Observable) )
             return false;
 
-        return observer == ((Observable)o).observer;
-    }
+        return ( observer == ((Observable)o).observer );
+    } /* equals */
 
-}
+
+
+// ===============================================================================================================
+// P R O T E C T E D   M E T H O D S
+// ===============================================================================================================
+
+
+
+    final protected void
+    registerObserver (final Observer repository) {
+        observer = repository;
+    } /* registerObserver */
+
+
+    final protected void
+    notifyObserver (final Object initiated) {
+        if ( observer != null )
+            observer.update(this, initiated);
+    } /* notifyObserver */
+
+
+    final protected void
+    deleteObserver () {
+        observer = null;
+    } /* deleteObserver */
+
+
+} /* class Observable */
+

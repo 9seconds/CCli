@@ -26,8 +26,8 @@ package org.aerialsounds.ccli.datacontainer;
 
 
 
-import org.aerialsounds.ccli.datacontainer.DataContainer.DataContainerException;
-import org.aerialsounds.ccli.datacontainer.DataContainer.OverrideRepository;
+import static org.aerialsounds.ccli.datacontainer.DataContainer.DataContainerException;
+import static org.aerialsounds.ccli.datacontainer.DataContainer.OverrideRepository;
 
 
 
@@ -35,10 +35,20 @@ final class SyncRepository
     implements SyncStrategies {
 
 
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
     @Override
-    public void sync (final DataContainer first, final DataContainer second) throws DataContainerException {
+    public void
+    sync (final DataContainer first, final DataContainer second)
+    throws DataContainerException {
         if ( first.repository != second.repository )
             throw new OverrideRepository();
-    }
+    } /* sync */
 
-}
+
+} /* class SyncRepository */

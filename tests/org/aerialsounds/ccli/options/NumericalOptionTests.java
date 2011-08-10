@@ -7,7 +7,6 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
@@ -19,51 +18,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+
+
 package org.aerialsounds.ccli.options;
 
-import static org.junit.Assert.*;
+
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.aerialsounds.ccli.OptionTypes;
 import org.aerialsounds.ccli.ValueTypes;
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
+
 import org.junit.Before;
 import org.junit.Test;
 
 
 
-
 public class NumericalOptionTests {
+
 
     private DataContainer container;
 
+
     @Before
-    public void setUp() {
+    public void setUp () {
         container = new DataContainer(null);
         container.setValueType(ValueTypes.BOOLEAN);
     }
 
-    @Test(expected = DataIsNotValid.class)
-    public void createWithWrongTypeLong() {
-        @SuppressWarnings ("unused")
-        NumericalOption opt = new NumericalOption(OptionTypes.LONG, "9", container);
-    }
-
-    @Test(expected = DataIsNotValid.class)
-    public void createWithWrongTypeCustom() {
-        @SuppressWarnings ("unused")
-        NumericalOption opt = new NumericalOption(OptionTypes.CUSTOM, "9", container);
-    }
-
-    @Test(expected = DataIsNotValid.class)
-    public void createWithWrongValueType() {
-        container.setValueType(ValueTypes.STRING);
-        @SuppressWarnings ("unused")
-        NumericalOption opt = new NumericalOption(OptionTypes.SHORT, "9", container);
-    }
 
     @Test
-    public void appropriate() {
+    public void appropriate () {
         NumericalOption opt = new NumericalOption(OptionTypes.SHORT, "9", container);
 
         assertTrue(opt.appropriate("-9"));
@@ -77,8 +68,47 @@ public class NumericalOptionTests {
         assertFalse(opt.appropriate("fdsffdx"));
     }
 
+
+    @Test (expected = DataIsNotValid.class)
+    public void createWithWrongTypeCustom () {
+        @SuppressWarnings ("unused") NumericalOption opt = new NumericalOption(OptionTypes.CUSTOM, "9", container);
+    }
+
+
+    @Test (expected = DataIsNotValid.class)
+    public void createWithWrongTypeLong () {
+        @SuppressWarnings ("unused") NumericalOption opt = new NumericalOption(OptionTypes.LONG, "9", container);
+    }
+
+
+    @Test (expected = DataIsNotValid.class)
+    public void createWithWrongValueType () {
+        container.setValueType(ValueTypes.STRING);
+        @SuppressWarnings ("unused") NumericalOption opt = new NumericalOption(OptionTypes.SHORT, "9", container);
+    }
+
+
     @Test
-    public void haveInlineValue() {
+    public void extractInlineValue () {
+        NumericalOption opt = new NumericalOption(OptionTypes.SHORT, "9", container);
+        assertEquals("true", opt.extractInlineValue("-9"));
+    }
+
+
+    @Test
+    public void getInlineValue () {
+        NumericalOption opt = new NumericalOption(OptionTypes.SHORT, "9", container);
+
+        assertEquals("true", opt.getInlineValue("-9"));
+
+        assertNull("true", opt.getInlineValue("-99"));
+        assertNull("true", opt.getInlineValue("-99f"));
+        assertNull("true", opt.getInlineValue("faqa"));
+    }
+
+
+    @Test
+    public void haveInlineValue () {
         NumericalOption opt = new NumericalOption(OptionTypes.SHORT, "9", container);
         assertTrue(opt.haveInlineValue("-9"));
 
@@ -90,23 +120,6 @@ public class NumericalOptionTests {
         assertFalse(opt.haveInlineValue("q999"));
         assertFalse(opt.haveInlineValue("999q"));
         assertFalse(opt.haveInlineValue("--999"));
-    }
-
-    @Test
-    public void extractInlineValue() {
-        NumericalOption opt = new NumericalOption(OptionTypes.SHORT, "9", container);
-        assertEquals("true", opt.extractInlineValue("-9"));
-    }
-
-    @Test
-    public void getInlineValue() {
-        NumericalOption opt = new NumericalOption(OptionTypes.SHORT, "9", container);
-
-        assertEquals("true", opt.getInlineValue("-9"));
-
-        assertNull("true", opt.getInlineValue("-99"));
-        assertNull("true", opt.getInlineValue("-99f"));
-        assertNull("true", opt.getInlineValue("faqa"));
     }
 
 }

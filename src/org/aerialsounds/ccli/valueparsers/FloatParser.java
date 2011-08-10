@@ -27,17 +27,27 @@ package org.aerialsounds.ccli.valueparsers;
 
 
 final public class FloatParser
-    implements NumberValueParser {
+    implements ValueParser {
+
+
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
 
 
     @Override
-    public Object parse (final String value) {
+    public Object
+    parse (final String value) {
         try {
             return Float.valueOf(value);
         }
         catch ( Exception e ) {
             return null;
         }
-    }
+    } /* parse */
 
-}
+
+} /* class FloatParser */
+

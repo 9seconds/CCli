@@ -26,20 +26,30 @@ package org.aerialsounds.ccli.datacontainer;
 
 
 
-import org.aerialsounds.ccli.datacontainer.DataContainer.DataContainerException;
+import static org.aerialsounds.ccli.datacontainer.DataContainer.DataContainerException;
 
 
 
 final class SyncDefined
     implements SyncStrategies {
 
-    private boolean defined;
+
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
 
     @Override
-    public void sync (final DataContainer first, final DataContainer second) throws DataContainerException {
-        defined = first.defined || second.defined;
+    public void
+    sync (final DataContainer first, final DataContainer second)
+    throws DataContainerException {
+        final boolean defined = first.defined || second.defined;
         first.defined = defined;
         second.defined = defined;
-    }
+    } /* sync */
 
-}
+
+} /* class SyncDefined */
+

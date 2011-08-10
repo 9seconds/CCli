@@ -30,11 +30,20 @@ final public class StringParser
     implements ValueParser {
 
 
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
     @Override
-    public Object parse (final String value) {
+    public Object
+    parse (final String value) {
         return ( value != null && value != "" )
             ? value
             : null;
-    }
+    } /* parse */
 
-}
+
+} /* class StringParser */

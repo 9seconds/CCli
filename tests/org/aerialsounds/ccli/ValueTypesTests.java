@@ -7,7 +7,6 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
@@ -19,11 +18,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+
+
 package org.aerialsounds.ccli;
 
-import static org.junit.Assert.*;
 
-import static org.aerialsounds.ccli.ValueTypes.*;
+
+import static org.aerialsounds.ccli.ValueTypes.ATOMIC_BOOLEAN;
+import static org.aerialsounds.ccli.ValueTypes.ATOMIC_INTEGER;
+import static org.aerialsounds.ccli.ValueTypes.ATOMIC_LONG;
+import static org.aerialsounds.ccli.ValueTypes.BIG_DECIMAL;
+import static org.aerialsounds.ccli.ValueTypes.BIG_INTEGER;
+import static org.aerialsounds.ccli.ValueTypes.BOOLEAN;
+import static org.aerialsounds.ccli.ValueTypes.BYTE;
+import static org.aerialsounds.ccli.ValueTypes.CHAR;
+import static org.aerialsounds.ccli.ValueTypes.DOUBLE;
+import static org.aerialsounds.ccli.ValueTypes.FLOAT;
+import static org.aerialsounds.ccli.ValueTypes.INTEGER;
+import static org.aerialsounds.ccli.ValueTypes.LONG;
+import static org.aerialsounds.ccli.ValueTypes.SHORT;
+import static org.aerialsounds.ccli.ValueTypes.STRING;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -31,8 +49,9 @@ import org.junit.Test;
 
 public class ValueTypesTests {
 
+
     @Test
-    public void atomicBoolean() {
+    public void atomicBoolean () {
         assertTrue(ATOMIC_BOOLEAN.isBoolean());
         assertFalse(ATOMIC_BOOLEAN.isFloat());
         assertFalse(ATOMIC_BOOLEAN.isInt());
@@ -41,8 +60,9 @@ public class ValueTypesTests {
         assertTrue(ATOMIC_BOOLEAN.isAtomic());
     }
 
+
     @Test
-    public void atomicInteger() {
+    public void atomicInteger () {
         assertFalse(ATOMIC_INTEGER.isBoolean());
         assertFalse(ATOMIC_INTEGER.isFloat());
         assertTrue(ATOMIC_INTEGER.isInt());
@@ -51,8 +71,9 @@ public class ValueTypesTests {
         assertTrue(ATOMIC_INTEGER.isAtomic());
     }
 
+
     @Test
-    public void atomicLong() {
+    public void atomicLong () {
         assertFalse(ATOMIC_LONG.isBoolean());
         assertFalse(ATOMIC_LONG.isFloat());
         assertTrue(ATOMIC_LONG.isInt());
@@ -61,8 +82,9 @@ public class ValueTypesTests {
         assertTrue(ATOMIC_LONG.isAtomic());
     }
 
+
     @Test
-    public void bigDecimal() {
+    public void bigDecimal () {
         assertFalse(BIG_DECIMAL.isBoolean());
         assertTrue(BIG_DECIMAL.isFloat());
         assertFalse(BIG_DECIMAL.isInt());
@@ -71,8 +93,9 @@ public class ValueTypesTests {
         assertFalse(BIG_DECIMAL.isAtomic());
     }
 
+
     @Test
-    public void bigInteger() {
+    public void bigInteger () {
         assertFalse(BIG_INTEGER.isBoolean());
         assertFalse(BIG_INTEGER.isFloat());
         assertTrue(BIG_INTEGER.isInt());
@@ -81,8 +104,9 @@ public class ValueTypesTests {
         assertFalse(BIG_INTEGER.isAtomic());
     }
 
+
     @Test
-    public void boolean_() {
+    public void boolean_ () {
         assertTrue(BOOLEAN.isBoolean());
         assertFalse(BOOLEAN.isFloat());
         assertFalse(BOOLEAN.isInt());
@@ -91,8 +115,9 @@ public class ValueTypesTests {
         assertFalse(BOOLEAN.isAtomic());
     }
 
+
     @Test
-    public void byte_() {
+    public void byte_ () {
         assertFalse(BYTE.isBoolean());
         assertFalse(BYTE.isFloat());
         assertTrue(BYTE.isInt());
@@ -101,8 +126,9 @@ public class ValueTypesTests {
         assertFalse(BYTE.isAtomic());
     }
 
+
     @Test
-    public void char_() {
+    public void char_ () {
         assertFalse(CHAR.isBoolean());
         assertFalse(CHAR.isFloat());
         assertFalse(CHAR.isInt());
@@ -111,8 +137,9 @@ public class ValueTypesTests {
         assertFalse(CHAR.isAtomic());
     }
 
+
     @Test
-    public void double_() {
+    public void double_ () {
         assertFalse(DOUBLE.isBoolean());
         assertTrue(DOUBLE.isFloat());
         assertFalse(DOUBLE.isInt());
@@ -121,8 +148,9 @@ public class ValueTypesTests {
         assertFalse(DOUBLE.isAtomic());
     }
 
+
     @Test
-    public void float_() {
+    public void float_ () {
         assertFalse(FLOAT.isBoolean());
         assertTrue(FLOAT.isFloat());
         assertFalse(FLOAT.isInt());
@@ -131,8 +159,9 @@ public class ValueTypesTests {
         assertFalse(FLOAT.isAtomic());
     }
 
+
     @Test
-    public void integer_() {
+    public void integer_ () {
         assertFalse(INTEGER.isBoolean());
         assertFalse(INTEGER.isFloat());
         assertTrue(INTEGER.isInt());
@@ -141,8 +170,9 @@ public class ValueTypesTests {
         assertFalse(INTEGER.isAtomic());
     }
 
+
     @Test
-    public void long_() {
+    public void long_ () {
         assertFalse(LONG.isBoolean());
         assertFalse(LONG.isFloat());
         assertTrue(LONG.isInt());
@@ -151,8 +181,9 @@ public class ValueTypesTests {
         assertFalse(LONG.isAtomic());
     }
 
+
     @Test
-    public void short_() {
+    public void short_ () {
         assertFalse(SHORT.isBoolean());
         assertFalse(SHORT.isFloat());
         assertTrue(SHORT.isInt());
@@ -161,8 +192,9 @@ public class ValueTypesTests {
         assertFalse(SHORT.isAtomic());
     }
 
+
     @Test
-    public void string_() {
+    public void string_ () {
         assertFalse(STRING.isBoolean());
         assertFalse(STRING.isFloat());
         assertFalse(STRING.isInt());

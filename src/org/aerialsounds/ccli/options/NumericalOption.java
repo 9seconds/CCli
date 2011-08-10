@@ -36,27 +36,54 @@ final public class NumericalOption
     extends ParseableOption {
 
 
-    public NumericalOption (final OptionTypes optionType, final String name, final DataContainer container)
-        throws DataIsNotValid {
+
+// ===============================================================================================================
+// C O N S T R U C T O R S
+// ===============================================================================================================
+
+
+
+    public
+    NumericalOption (final OptionTypes optionType, final String name, final DataContainer container)
+    throws DataIsNotValid {
         super(optionType, name, container);
-    }
+    } /* NumericalOption */
+
+
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
 
 
     @Override
-    protected String extractInlineValue (final String option) {
-        return BooleanConverter.TRUE;
-    }
-
-
-    @Override
-    public boolean haveInlineValue (final String option) {
+    public boolean
+    haveInlineValue (final String option) {
         return option.equals(fullName);
-    }
+    } /* haveInlineValue */
+
+
+
+// ===============================================================================================================
+// P R O T E C T E D   M E T H O D S
+// ===============================================================================================================
+
 
 
     @Override
-    protected boolean isDataValid () {
-        return super.isDataValid() && optionType == OptionTypes.SHORT && getValueType().isBoolean();
-    }
+    protected String
+    extractInlineValue (final String option) {
+        return BooleanConverter.TRUE;
+    } /* extractInlineValue */
 
-}
+
+    @Override
+    protected boolean
+    isDataValid () {
+        return super.isDataValid() && optionType == OptionTypes.SHORT && getValueType().isBoolean();
+    } /* isDataValid */
+
+
+} /* class NumericalOption */
+

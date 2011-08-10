@@ -29,27 +29,37 @@ package org.aerialsounds.ccli;
 public interface Option {
 
 
-    void bind (final Option other) throws CannotBind;
+    void
+    bind (final Option other)
+    throws CannotBind;
 
 
-    String getFullName ();
+    String
+    getFullName ();
 
 
-    String getHelp ();
+    String
+    getHelp ();
 
 
-    String getName ();
+    String
+    getName ();
 
 
-    OptionTypes getType ();
+    OptionTypes
+    getType ();
 
 
-    Object getValue ();
+    Object
+    getValue ();
 
 
-    ValueTypes getValueType ();
+    ValueTypes
+    getValueType ();
 
 
-    boolean isParsed ();
+    boolean
+    isParsed ();
 
-}
+} /* interface Option */
+

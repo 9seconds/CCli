@@ -38,45 +38,67 @@ public class DataContainer
     implements Cloneable {
 
 
+
+// ===============================================================================================================
+// E X C E P T I O N S
+// ===============================================================================================================
+
+
+
     static public class DataContainerException
         extends RuntimeException {
         private static final long serialVersionUID = -3906176569968438426L;
-    }
+    } /* class DataContainerException */
 
 
     static public class OverrideDefaultValue
         extends DataContainerException {
         private static final long serialVersionUID = 1965993953899572949L;
-    }
+    } /* class OverrideDefaultValue */
 
 
     static public class OverrideHelp
         extends DataContainerException {
         private static final long serialVersionUID = 760144351098670916L;
-    }
+    } /* class OverrideHelp */
 
 
     static public class OverrideRepository
         extends DataContainerException {
         private static final long serialVersionUID = -8077225949167364177L;
-    }
+    } /* class OverrideRepository */
 
 
     static public class OverrideValue
         extends DataContainerException {
         private static final long serialVersionUID = -738739296317104089L;
-    }
+    } /* class OverrideValue */
 
 
     static public class OverrideValueType
         extends DataContainerException {
         private static final long serialVersionUID = -7375865139493740998L;
-    }
+    } /* class OverrideValueType */
+
+
+
+// ===============================================================================================================
+// S T A T I C   F I E L D S
+// ===============================================================================================================
+
 
 
     static protected final Collection<SyncStrategies> syncStrategies;
     static private   final DataContainer              firstBackup;
     static private   final DataContainer              secondBackup;
+
+
+
+// ===============================================================================================================
+// S T A T I C   I N I T I A L I Z A T O R
+// ===============================================================================================================
+
+
 
     static {
         firstBackup  = new DataContainer();
@@ -89,31 +111,19 @@ public class DataContainer
         syncStrategies.add(new SyncValue());
         syncStrategies.add(new SyncRepository());
         syncStrategies.add(new SyncDefined());
-    }
-
-    static private void backup (final DataContainer first, final DataContainer second) {
-        firstBackup.setFrom(first);
-        secondBackup.setFrom(second);
-    }
+    } /* static */
 
 
-    static protected boolean isFieldsEqual (final Object one, final Object another) {
-        return (
-               one == another
-            || one == null && another == null
-            || one != null && another != null && one.equals(another)
-        );
-    }
+
+// ===============================================================================================================
+// S T A T I C   M E T H O D S
+// ===============================================================================================================
 
 
-    static private void rollback (final DataContainer first, final DataContainer second) {
-        first.setFrom(firstBackup);
-        second.setFrom(secondBackup);
-    }
 
-
-    static public void synchronize (final DataContainer first, final DataContainer second)
-        throws DataContainerException {
+    static public void
+    synchronize (final DataContainer first, final DataContainer second)
+    throws DataContainerException {
         if ( first != second ) {
             backup(first, second);
             try {
@@ -125,7 +135,38 @@ public class DataContainer
                 throw e;
             }
         }
-    }
+    } /* synchronize */
+
+
+    static protected boolean
+    isFieldsEqual (final Object one, final Object another) {
+        return (
+               one == another
+            || one == null && another == null
+            || one != null && another != null && one.equals(another)
+        );
+    } /* isFieldsEqual */
+
+
+    static private void
+    backup (final DataContainer first, final DataContainer second) {
+        firstBackup.setFrom(first);
+        secondBackup.setFrom(second);
+    } /* backup */
+
+
+    static private void
+    rollback (final DataContainer first, final DataContainer second) {
+        first.setFrom(firstBackup);
+        second.setFrom(secondBackup);
+    } /* rollback */
+
+
+
+// ===============================================================================================================
+// F I E L D S
+// ===============================================================================================================
+
 
 
     protected String     help;
@@ -136,24 +177,129 @@ public class DataContainer
     protected boolean    defined;
 
 
-    public DataContainer () {
+
+// ===============================================================================================================
+// C O N S T R U C T O R S
+// ===============================================================================================================
+
+
+
+    public
+    DataContainer () {
         this(null);
-    }
+    } /* DataContainer */
 
 
-    public DataContainer (final CCli repository) {
+    public
+    DataContainer (final CCli repository) {
         this.repository = repository;
-    }
+    } /* DataContainer */
 
 
-    public void dropDefined () {
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
+    final public CCli
+    getRepository () {
+        return repository;
+    } /* getRepository */
+
+
+    final public Object
+    getDefaultValue () {
+        return defaultValue;
+    } /* getDefaultValue */
+
+
+    public void
+    setDefaultValue (final Object defaultValue) {
+        this.defaultValue = defaultValue;
+    } /* setDefaultValue */
+
+
+    final public String
+    getHelp () {
+        return help;
+    } /* getHelp */
+
+
+    public void
+    setHelp (final String help) {
+        this.help = help;
+    } /* setHelp */
+
+
+    final public Object
+    getValue () {
+        return value;
+    } /* getValue */
+
+
+    public void
+    setValue (final Object value) {
+        this.value = value;
+        defined = value != null;
+    } /* setValue */
+
+
+    final public ValueTypes
+    getValueType () {
+        return valueType;
+    } /* getValueType */
+
+
+    public void
+    setValueType (final ValueTypes valueType) {
+        this.valueType = valueType;
+    } /* setValueType */
+
+
+    final public boolean
+    isDefined () {
+        return defined;
+    } /* isDefined */
+
+
+    public boolean
+    isConsistent () {
+        final boolean correctValueType    = (valueType != null);
+        final boolean correctDefaultValue = (
+            correctValueType && defaultValue != null && valueType.isInstancedBy(defaultValue)
+        );
+        final boolean correctValue        = (
+            correctValueType && ( value == null || value != null && valueType.isInstancedBy(value) )
+        );
+
+        return (
+               help != null
+            && repository != null
+            && correctDefaultValue
+            && correctValue
+            && ( value == null ^ defined )
+        );
+    } /* isConsistent */
+
+
+    public void
+    dispose () {
+        repository = null;
+    } /* dispose */
+
+
+    final public void
+    dropDefined () {
         value   = null;
         defined = false;
-    }
+    } /* dropDefined */
 
 
     @Override
-    public boolean equals (final Object obj) {
+    public boolean
+    equals (final Object obj) {
         if ( this == obj )
             return true;
         else if ( getClass() != obj.getClass() )
@@ -167,71 +313,27 @@ public class DataContainer
             && isFieldsEqual(defaultValue, other.defaultValue)
             && isFieldsEqual(repository,   other.repository)
         );
-    }
+    } /* equals */
+
 
     @Override
-    public Object clone () {
+    public Object
+    clone () {
         DataContainer container = new DataContainer();
         container.setFrom(this);
         return container;
-    }
+    } /* clone */
 
 
-    final public Object getDefaultValue () {
-        return defaultValue;
-    }
+
+// ===============================================================================================================
+// P R O T E C T E D   M E T H O D S
+// ===============================================================================================================
 
 
-    final public String getHelp () {
-        return help;
-    }
 
-
-    final public CCli getRepository () {
-        return repository;
-    }
-
-
-    final public Object getValue () {
-        return value;
-    }
-
-
-    public ValueTypes getValueType () {
-        return valueType;
-    }
-
-
-    public boolean isConsistent () {
-        final boolean correctValueType    = (valueType != null);
-        final boolean correctDefaultValue = (
-            correctValueType && defaultValue != null && valueType.isInstancedBy(defaultValue)
-        );
-        final boolean correctValue        = (
-            correctValueType && ( value == null || value != null && valueType.isInstancedBy(value) )
-        );
-
-        return (
-               (help != null)
-            && (repository != null)
-            && correctDefaultValue
-            && correctValue
-            && ( value == null ^ defined )
-        );
-    }
-
-
-    final public boolean isDefined () {
-        return defined;
-    }
-
-
-    public void setDefaultValue (final Object defaultValue) {
-        this.defaultValue = defaultValue;
-    }
-
-
-    protected void setFrom (final DataContainer container) {
+    protected void
+    setFrom (final DataContainer container) {
         if ( container != this ) {
             help         = container.help;
             valueType    = container.valueType;
@@ -240,25 +342,8 @@ public class DataContainer
             repository   = container.repository;
             defined      = container.defined;
         }
-    }
+    } /* setFrom */
 
 
-    public void setHelp (final String help) {
-        this.help = help;
-    }
+} /* class DataContainer */
 
-
-    public void setValue (final Object value) {
-        this.value = value;
-        defined = value != null;
-    }
-
-    public void dispose() {
-        repository = null;
-    }
-
-    public void setValueType (final ValueTypes valueType) {
-        this.valueType = valueType;
-    }
-
-}

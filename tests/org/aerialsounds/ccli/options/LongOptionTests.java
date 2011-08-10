@@ -7,7 +7,6 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
@@ -19,38 +18,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+
+
 package org.aerialsounds.ccli.options;
 
-import static org.junit.Assert.*;
+
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.aerialsounds.ccli.OptionTypes;
 import org.aerialsounds.ccli.ValueTypes;
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
+
 import org.junit.Before;
 import org.junit.Test;
 
 
 
-
 public class LongOptionTests {
+
 
     private DataContainer container;
 
+
     @Before
-    public void setUp() {
+    public void setUp () {
         container = new DataContainer();
         container.setValueType(ValueTypes.BOOLEAN);
     }
 
-    @Test(expected = DataIsNotValid.class)
-    public void createWithWrongTypeShort() {
-        @SuppressWarnings ("unused")
-        LongOption l = new LongOption(OptionTypes.SHORT, "vbr-new", container);
-    }
 
     @Test
-    public void appropriate() {
+    public void appropriate () {
         LongOption l = new LongOption(OptionTypes.LONG, "vbr-new", container);
 
         assertTrue(l.appropriate("--vbr-new"));
@@ -72,23 +76,15 @@ public class LongOptionTests {
         assertFalse(l.appropriate("--vbr-new1.2ef"));
     }
 
-    @Test
-    public void haveInlineValue() {
-        LongOption l = new LongOption(OptionTypes.LONG, "vbr-new", container);
 
-        assertFalse(l.haveInlineValue("--vbr-new"));
-
-        assertTrue(l.haveInlineValue("--vbr-new="));
-        assertTrue(l.haveInlineValue("--vbr-new=1"));
-        assertTrue(l.haveInlineValue("--vbr-new=TRUE"));
-        assertTrue(l.haveInlineValue("--vbr-new=1.2"));
-        assertTrue(l.haveInlineValue("--vbr-new=.2"));
-        assertTrue(l.haveInlineValue("--vbr-new=1."));
-        assertTrue(l.haveInlineValue("--vbr-new=1.2ef"));
+    @Test (expected = DataIsNotValid.class)
+    public void createWithWrongTypeShort () {
+        @SuppressWarnings ("unused") LongOption l = new LongOption(OptionTypes.SHORT, "vbr-new", container);
     }
 
+
     @Test
-    public void extractInlineValue() {
+    public void extractInlineValue () {
         LongOption l = new LongOption(OptionTypes.LONG, "vbr-new", container);
 
         assertNull(l.getInlineValue("--vbr-new"));
@@ -100,6 +96,22 @@ public class LongOptionTests {
         assertEquals(".2", l.getInlineValue("--vbr-new=.2"));
         assertEquals("1.", l.getInlineValue("--vbr-new=1."));
         assertEquals("1.2ef", l.getInlineValue("--vbr-new=1.2ef"));
+    }
+
+
+    @Test
+    public void haveInlineValue () {
+        LongOption l = new LongOption(OptionTypes.LONG, "vbr-new", container);
+
+        assertFalse(l.haveInlineValue("--vbr-new"));
+
+        assertTrue(l.haveInlineValue("--vbr-new="));
+        assertTrue(l.haveInlineValue("--vbr-new=1"));
+        assertTrue(l.haveInlineValue("--vbr-new=TRUE"));
+        assertTrue(l.haveInlineValue("--vbr-new=1.2"));
+        assertTrue(l.haveInlineValue("--vbr-new=.2"));
+        assertTrue(l.haveInlineValue("--vbr-new=1."));
+        assertTrue(l.haveInlineValue("--vbr-new=1.2ef"));
     }
 
 }

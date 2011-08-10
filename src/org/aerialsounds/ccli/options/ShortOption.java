@@ -37,8 +37,24 @@ import org.aerialsounds.ccli.datacontainer.DataContainer;
 public class ShortOption
     extends ParseableOption {
 
+
+
+// ===============================================================================================================
+// S T A T I C   F I E L D S
+// ===============================================================================================================
+
+
+
     static protected final Pattern inlineRegexp;
     static protected final Pattern numbersRegexp;
+
+
+
+// ===============================================================================================================
+// S T A T I C   I N I T I A L I Z A T O R
+// ===============================================================================================================
+
+
 
     static {
         inlineRegexp = Pattern.compile(
@@ -46,44 +62,81 @@ public class ShortOption
             patternFlags
         );
         numbersRegexp = Pattern.compile("\\D*(\\d+)\\D*", patternFlags);
-    }
+    } /* static */
 
 
-    static public boolean haveNumbers (final String option) {
+
+// ===============================================================================================================
+// S T A T I C   M E T H O D S
+// ===============================================================================================================
+
+
+
+    static public boolean
+    haveNumbers (final String option) {
         return numbersRegexp.matcher(option).matches();
-    }
+    } /* haveNumbers */
 
 
-    public ShortOption (final OptionTypes optionType, final String name, final DataContainer container)
-        throws DataIsNotValid {
+
+// ===============================================================================================================
+// C O N S T R U C T O R S
+// ===============================================================================================================
+
+
+
+    public
+    ShortOption (final OptionTypes optionType, final String name, final DataContainer container)
+    throws DataIsNotValid {
         super(optionType, name, container);
-    }
+    } /* ShortOption */
+
+
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
 
 
     @Override
-    public boolean appropriate (final String value) {
+    public boolean
+    appropriate (final String value) {
         return super.appropriate(value) || (value.startsWith(fullName) && haveInlineValue(value));
-    }
+    } /* appropriate */
+
 
 
     @Override
-    protected String extractInlineValue (final String option) {
+    public boolean
+    haveInlineValue (final String option) {
+        return getValueType().isNumber() && !haveInlineDelimeter(option) && inlineRegexp.matcher(option).matches();
+    } /* haveInlineValue */
+
+
+
+// ===============================================================================================================
+// P R O T E C T E D   M E T H O D S
+// ===============================================================================================================
+
+
+
+    @Override
+    protected String
+    extractInlineValue (final String option) {
         final Matcher match = inlineRegexp.matcher(option);
         return ( match.find() )
             ? match.group(1)
             : null;
-    }
+    } /* extractInlineValue */
 
 
     @Override
-    public boolean haveInlineValue (final String option) {
-        return getValueType().isNumber() && !haveInlineDelimeter(option) && inlineRegexp.matcher(option).matches();
-    }
-
-
-    @Override
-    protected boolean isDataValid () {
+    protected boolean
+    isDataValid () {
         return super.isDataValid() && optionType == OptionTypes.SHORT && name.length() == 1;
-    }
+    } /* isDataValid */
 
-}
+
+} /* class ShortOption */
+

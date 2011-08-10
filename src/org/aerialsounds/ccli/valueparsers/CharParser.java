@@ -30,13 +30,22 @@ final public class CharParser
     implements ValueParser {
 
 
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
     @Override
-    public Object parse (final String value) {
+    public Object
+    parse (final String value) {
         if ( value == null ) return null;
 
         return (value.length() == 1)
             ? value.toCharArray()[0]
             : null;
-    }
+    } /* parse */
 
-}
+
+} /* class CharParser */

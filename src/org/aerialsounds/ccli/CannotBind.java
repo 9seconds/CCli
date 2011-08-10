@@ -29,4 +29,4 @@ package org.aerialsounds.ccli;
 public class CannotBind
     extends RuntimeException {
     private static final long serialVersionUID = 9035409865724452061L;
-}
+} /* class CannotBind */

@@ -31,14 +31,24 @@ final public class BooleanParser
     implements ValueParser {
 
 
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
     @Override
-    public Object parse (final String value) {
+    public Object
+    parse (final String value) {
         try {
             return convert(value);
         }
         catch ( Exception e ) {
             return null;
         }
-    }
+    } /* parse */
 
-}
+
+} /* class BooleanParser */
+

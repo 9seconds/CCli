@@ -26,27 +26,51 @@ package org.aerialsounds.ccli;
 
 
 
+import static org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
+
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.options.LongOption;
 import org.aerialsounds.ccli.options.NumericalOption;
 import org.aerialsounds.ccli.options.ParseableOption;
 import org.aerialsounds.ccli.options.ShortOption;
-import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 
 
 
 class CliFactory {
 
 
+
+// ===============================================================================================================
+// F I E L D S
+// ===============================================================================================================
+
+
+
     private final CCli repository;
 
 
-    public CliFactory (final CCli repository) {
+
+ // ===============================================================================================================
+ // C O N S T R U C T O R S
+ // ===============================================================================================================
+
+
+
+    public
+    CliFactory (final CCli repository) {
         this.repository = repository;
-    }
+    } /* CliFactory */
 
 
-    public DataContainer createDataContainer (final Object defaultValue, final ValueTypes valueType, final String help) {
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
+    public DataContainer
+    createDataContainer (final Object defaultValue, final ValueTypes valueType, final String help) {
         final DataContainer container = new DataContainer(repository);
 
         container.setDefaultValue(defaultValue);
@@ -54,11 +78,12 @@ class CliFactory {
         container.setHelp(help);
 
         return container;
-    }
+    } /* createDataContainer */
 
 
-    public ParseableOption createOption (final OptionTypes type, final String name, final DataContainer container)
-        throws DataIsNotValid {
+    public ParseableOption
+    createOption (final OptionTypes type, final String name, final DataContainer container)
+    throws DataIsNotValid {
         if ( type == OptionTypes.SHORT && ParseableOption.isPureNumerical(name) )
             return new NumericalOption(type, name, container);
 
@@ -69,6 +94,8 @@ class CliFactory {
             default:
                 return new LongOption(type, name, container);
         }
-    }
+    } /* createOption */
 
-}
+
+} /* class CliFactory */
+

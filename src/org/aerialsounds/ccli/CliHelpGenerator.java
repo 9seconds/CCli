@@ -26,7 +26,8 @@ package org.aerialsounds.ccli;
 
 
 
-import java.util.Arrays;
+import static java.util.Arrays.sort;
+
 import java.util.Collection;
 import java.util.Set;
 
@@ -37,11 +38,26 @@ import org.aerialsounds.ccli.options.AbstractOption;
 public class CliHelpGenerator {
 
 
+
+// ===============================================================================================================
+// F I E L D S
+// ===============================================================================================================
+
+
+
     protected StringBuilder builder;
     protected String[]      names;
 
 
-    final public String generate (final Collection<Set<AbstractOption>> values) {
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
+    final public String
+    generate (final Collection<Set<AbstractOption>> values) {
         builder = new StringBuilder();
         names   = null;
 
@@ -53,52 +69,76 @@ public class CliHelpGenerator {
                names   = null;
 
         return ret;
-    }
+    } /* generate */
 
 
-    private void generateForSet (final Set<AbstractOption> set) {
-        before();
-        retrieveOptionNames(set);
-        generateOptionList();
-        generateHelp(set);
-        after();
-    }
 
-    protected void after () {
-
-    }
+// ===============================================================================================================
+// P R O T E C T E D   M E T H O D S
+// ===============================================================================================================
 
 
-    protected void before () {
 
-    }
-
-
-    protected void generateHelp (final Set<AbstractOption> set) {
-        if ( !set.isEmpty() ) {
-            builder.append("\n    ");
-            builder.append(set.iterator().next().getFullName());
-            builder.append("\n");
-        }
-    }
-
-
-    protected void generateOptionList () {
+    protected void
+    generateOptionList () {
         for ( int i = 0; i < names.length; ++i ) {
             if ( i > 0 )
                 builder.append(", ");
             builder.append(names[i]);
         }
-    }
+    } /* generateOptionList */
 
 
-    private void retrieveOptionNames (final Set<AbstractOption> set) {
+    protected void
+    generateHelp (final Set<AbstractOption> set) {
+        if ( !set.isEmpty() ) {
+            builder.append("\n    ");
+            builder.append(set.iterator().next().getFullName());
+            builder.append("\n");
+        }
+    } /* generateHelp */
+
+
+    protected void
+    after () {
+
+    } /* after */
+
+
+    protected void
+    before () {
+
+    } /* before */
+
+
+
+// ===============================================================================================================
+// P R I V A T E   M E T H O D S
+// ===============================================================================================================
+
+
+
+    private void
+    generateForSet (final Set<AbstractOption> set) {
+        before();
+        retrieveOptionNames(set);
+        generateOptionList();
+        generateHelp(set);
+        after();
+    } /* generateForSet */
+
+
+    private void
+    retrieveOptionNames (final Set<AbstractOption> set) {
         names = new String[set.size()];
 
         int i = 0;
         for ( AbstractOption o : set )
             names[i++] = o.getFullName();
 
-        Arrays.sort(names);
-    }
-}
+        sort(names);
+    } /* retrieveOptionNames */
+
+
+} /* class CliHelpGenerator */
+

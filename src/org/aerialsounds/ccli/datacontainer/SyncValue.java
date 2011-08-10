@@ -27,8 +27,8 @@ package org.aerialsounds.ccli.datacontainer;
 
 
 
-import org.aerialsounds.ccli.datacontainer.DataContainer.DataContainerException;
-import org.aerialsounds.ccli.datacontainer.DataContainer.OverrideValue;
+import static org.aerialsounds.ccli.datacontainer.DataContainer.DataContainerException;
+import static org.aerialsounds.ccli.datacontainer.DataContainer.OverrideValue;
 
 
 
@@ -36,13 +36,25 @@ final class SyncValue
     implements SyncStrategies {
 
 
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
     @Override
-    public void sync (final DataContainer first, final DataContainer second) throws DataContainerException {
+    public void
+    sync (final DataContainer first, final DataContainer second)
+    throws DataContainerException {
         if ( first.value == null )
             first.value = second.value;
         else if ( second.value == null )
             second.value = first.value;
-        else if ( !first.value.equals(second.value) ) throw new OverrideValue();
-    }
+        else if ( !first.value.equals(second.value) )
+            throw new OverrideValue();
+    } /* sync */
 
-}
+
+} /* class SyncValue */
+

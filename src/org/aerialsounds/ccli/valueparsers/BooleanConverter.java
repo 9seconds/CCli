@@ -30,34 +30,65 @@ package org.aerialsounds.ccli.valueparsers;
 public class BooleanConverter {
 
 
-    protected class CannotConvert
+
+// ===============================================================================================================
+// E X C E P T I O N S
+// ===============================================================================================================
+
+
+
+    static protected class CannotConvert
         extends RuntimeException {
         private static final long serialVersionUID = 5652929665240085597L;
-    }
+    } /* class CannotConvert */
+
+
+
+// ===============================================================================================================
+// I N T E R N A L   C L A S S E S
+// ===============================================================================================================
+
 
 
     protected class ValuePair {
 
-        final public boolean value;
-        final public boolean converted;
+        public final boolean value;
+        public final boolean converted;
 
-        public ValuePair (final boolean value, final boolean converted) {
+        public
+        ValuePair (final boolean value, final boolean converted) {
             this.value = value;
             this.converted = converted;
-        }
-    }
+        } /* ValuePair */
+
+    } /* class ValuePair */
 
 
-    final static private String[] positive             = {"true", "y", "yes"};
-    final static private String[] negative             = {"false", "n", "no"};
-    final static public byte      NUMERICAL_SIGN_TRUE  = 1;
-    final static public byte      NUMERICAL_SIGN_FALSE = 0;
 
-    final static public String TRUE = Boolean.TRUE.toString();
-    final static public String FALSE = Boolean.FALSE.toString();
+// ===============================================================================================================
+// S T A T I C   F I E L D S
+// ===============================================================================================================
 
 
-    final boolean convert (final String value) throws CannotConvert {
+
+    static private final String[] positive             = {"true",  "y", "yes"};
+    static private final String[] negative             = {"false", "n", "no"};
+    static public  final String   TRUE                 = Boolean.TRUE.toString();
+    static public  final String   FALSE                = Boolean.FALSE.toString();
+    static public  final byte     NUMERICAL_SIGN_TRUE  = 1;
+    static public  final byte     NUMERICAL_SIGN_FALSE = 0;
+
+
+
+// ===============================================================================================================
+// P R O T E C T E D   M E T H O D S
+// ===============================================================================================================
+
+
+
+    final protected boolean
+    convert (final String value)
+    throws CannotConvert {
         final String s = value.toLowerCase();
 
         if ( interpretAsString(s, positive) )
@@ -70,10 +101,17 @@ public class BooleanConverter {
             return result.value;
 
         throw new CannotConvert();
-    }
+    } /* convert */
 
 
-    final private ValuePair interpretAsNumber (final String value) {
+
+// ===============================================================================================================
+// P R I V A T E   M E T H O D S
+// ===============================================================================================================
+
+
+    private ValuePair
+    interpretAsNumber (final String value) {
         try {
             final byte result = Byte.valueOf(value);
 
@@ -85,15 +123,18 @@ public class BooleanConverter {
         catch ( Exception e ) { }
 
         return new ValuePair(false, false);
-    }
+    } /* interpretAsNumber */
 
 
-    final private boolean interpretAsString (final String value, final String[] values) {
+    private boolean
+    interpretAsString (final String value, final String[] values) {
         for ( String s : values )
             if ( value.equals(s) )
                 return true;
 
         return false;
-    }
+    } /* interpretAsString */
 
-}
+
+} /* class BooleanConverter */
+

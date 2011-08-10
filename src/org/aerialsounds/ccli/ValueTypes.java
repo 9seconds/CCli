@@ -51,6 +51,15 @@ import org.aerialsounds.ccli.valueparsers.ValueParser;
 
 
 public enum ValueTypes {
+
+
+
+// ===============================================================================================================
+// D E F I N I T I O N S
+// ===============================================================================================================
+
+
+
     ATOMIC_BOOLEAN (AtomicBoolean.class),
     ATOMIC_INTEGER (AtomicInteger.class),
     ATOMIC_LONG    (AtomicLong.class),
@@ -67,7 +76,21 @@ public enum ValueTypes {
     STRING         (String.class);
 
 
+
+// ===============================================================================================================
+// F I E L D S
+// ===============================================================================================================
+
+
+
     private final Class<?> type;
+
+
+
+// ===============================================================================================================
+// C O N S T R U C T O R S
+// ===============================================================================================================
+
 
 
     private ValueTypes (final Class<?> type) {
@@ -75,7 +98,15 @@ public enum ValueTypes {
     }
 
 
-    public ValueParser createParser () {
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
+    public ValueParser
+    createParser () {
         switch ( this ) {
             case ATOMIC_BOOLEAN:
                 return new AtomicBooleanParser();
@@ -119,41 +150,47 @@ public enum ValueTypes {
             case STRING:
             default:
                 return new StringParser();
-        }
-    }
+        } // switch ( this )
+    } /* createParser */
 
-    final public boolean isInstancedBy (final Object o) {
+
+    final public boolean
+    isInstancedBy (final Object o) {
         return type.isInstance(o);
-    }
+    } /* isInstancedBy */
 
 
-    public boolean isAtomic () {
+    public boolean
+    isAtomic () {
         return (
                this == ATOMIC_BOOLEAN
             || this == ATOMIC_INTEGER
             || this == ATOMIC_LONG
         );
-    }
+    } /* isAtomic */
 
 
-    public boolean isBoolean () {
+    public boolean
+    isBoolean () {
         return (
                this == BOOLEAN
             || this == ATOMIC_BOOLEAN
         );
-    }
+    } /* isBoolean */
 
 
-    public boolean isFloat () {
+    public boolean
+    isFloat () {
         return (
                this == DOUBLE
             || this == FLOAT
             || this == BIG_DECIMAL
         );
-    }
+    } /* isFloat */
 
 
-    public boolean isInt () {
+    public boolean
+    isInt () {
         return (
                this == INTEGER
             || this == BYTE
@@ -163,18 +200,23 @@ public enum ValueTypes {
             || this == ATOMIC_INTEGER
             || this == ATOMIC_LONG
         );
-    }
+    } /* isInt */
 
 
-    public boolean isNumber () {
+    public boolean
+    isNumber () {
         return ( isInt() || isFloat() );
-    }
+    } /* isNumber */
 
 
-    public boolean isString () {
+    public boolean
+    isString () {
         return (
                this == STRING
             || this == CHAR
         );
-    }
-}
+    } /* isString */
+
+
+} /* enum ValueTypes */
+

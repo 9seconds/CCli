@@ -7,7 +7,6 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
@@ -19,9 +18,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+
+
 package org.aerialsounds.ccli.valueparsers;
 
-import static org.junit.Assert.*;
+
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -30,30 +37,33 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.aerialsounds.ccli.ValueTypes;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 
+
 public class ValueParserTests {
+
 
     private static final String BOOLEAN_TRUE = "true";
     private static final String BIG_INT      = "1046943479208775920458790207774013104";
     private static final String NAN          = "sdflsdklfsldfnpppsdfns;[sdfn";
 
-    static private ValueParser parserAtomicBoolean;
-    static private ValueParser parserAtomicInteger;
-    static private ValueParser parserAtomicLong;
-    static private ValueParser parserBigDecimal;
-    static private ValueParser parserBigInteger;
-    static private ValueParser parserBoolean;
-    static private ValueParser parserByte;
-    static private ValueParser parserChar;
-    static private ValueParser parserDouble;
-    static private ValueParser parserFloat;
-    static private ValueParser parserInteger;
-    static private ValueParser parserLong;
-    static private ValueParser parserShort;
-    static private ValueParser parserString;
+    static private ValueParser  parserAtomicBoolean;
+    static private ValueParser  parserAtomicInteger;
+    static private ValueParser  parserAtomicLong;
+    static private ValueParser  parserBigDecimal;
+    static private ValueParser  parserBigInteger;
+    static private ValueParser  parserBoolean;
+    static private ValueParser  parserByte;
+    static private ValueParser  parserChar;
+    static private ValueParser  parserDouble;
+    static private ValueParser  parserFloat;
+    static private ValueParser  parserInteger;
+    static private ValueParser  parserLong;
+    static private ValueParser  parserShort;
+    static private ValueParser  parserString;
 
 
     @BeforeClass
@@ -74,24 +84,6 @@ public class ValueParserTests {
         parserString        = ValueTypes.STRING.createParser();
     }
 
-
-    @Test
-    public void testImplementInterface () {
-        assertTrue(parserAtomicBoolean instanceof ValueParser);
-        assertTrue(parserAtomicInteger instanceof ValueParser);
-        assertTrue(parserAtomicLong instanceof ValueParser);
-        assertTrue(parserBigDecimal instanceof ValueParser);
-        assertTrue(parserBigInteger instanceof ValueParser);
-        assertTrue(parserBoolean instanceof ValueParser);
-        assertTrue(parserByte instanceof ValueParser);
-        assertTrue(parserChar instanceof ValueParser);
-        assertTrue(parserDouble instanceof ValueParser);
-        assertTrue(parserFloat instanceof ValueParser);
-        assertTrue(parserInteger instanceof ValueParser);
-        assertTrue(parserLong instanceof ValueParser);
-        assertTrue(parserShort instanceof ValueParser);
-        assertTrue(parserString instanceof ValueParser);
-    }
 
     @Test
     public void testAtomicBoolean () {
@@ -121,30 +113,31 @@ public class ValueParserTests {
         assertTrue(parserAtomicBoolean.parse("0") instanceof AtomicBoolean);
         assertTrue(parserAtomicBoolean.parse("1") instanceof AtomicBoolean);
 
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse("false")).get());
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse("n")).get());
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse("no")).get());
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse("False")).get());
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse("FALSE")).get());
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse("N")).get());
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse("NO")).get());
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse("No")).get());
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse("0")).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse("false")).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse("n")).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse("no")).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse("False")).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse("FALSE")).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse("N")).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse("NO")).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse("No")).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse("0")).get());
 
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse(BOOLEAN_TRUE)).get());
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse("y")).get());
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse("yes")).get());
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse("True")).get());
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse("TRUE")).get());
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse("Y")).get());
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse("Yes")).get());
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse("YES")).get());
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse("1")).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse(BOOLEAN_TRUE)).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse("y")).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse("yes")).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse("True")).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse("TRUE")).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse("Y")).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse("Yes")).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse("YES")).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse("1")).get());
 
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse(Boolean.TRUE.toString())).get());
-        assertFalse(((AtomicBoolean) parserAtomicBoolean.parse(Boolean.FALSE.toString())).get());
-        assertTrue(((AtomicBoolean) parserAtomicBoolean.parse(String.valueOf(BooleanConverter.NUMERICAL_SIGN_TRUE))).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse(Boolean.TRUE.toString())).get());
+        assertFalse(((AtomicBoolean)parserAtomicBoolean.parse(Boolean.FALSE.toString())).get());
+        assertTrue(((AtomicBoolean)parserAtomicBoolean.parse(String.valueOf(BooleanConverter.NUMERICAL_SIGN_TRUE))).get());
     }
+
 
     @Test
     public void testAtomicInteger () {
@@ -157,10 +150,11 @@ public class ValueParserTests {
         assertTrue(parserAtomicInteger.parse("1") instanceof AtomicInteger);
         assertTrue(parserAtomicInteger.parse("-1") instanceof AtomicInteger);
 
-        assertEquals(0, ((AtomicInteger) parserAtomicInteger.parse("0")).get());
-        assertEquals(1, ((AtomicInteger) parserAtomicInteger.parse("1")).get());
-        assertEquals(-1, ((AtomicInteger) parserAtomicInteger.parse("-1")).get());
+        assertEquals(0, ((AtomicInteger)parserAtomicInteger.parse("0")).get());
+        assertEquals(1, ((AtomicInteger)parserAtomicInteger.parse("1")).get());
+        assertEquals(-1, ((AtomicInteger)parserAtomicInteger.parse("-1")).get());
     }
+
 
     @Test
     public void testAtomicLong () {
@@ -173,10 +167,11 @@ public class ValueParserTests {
         assertTrue(parserAtomicLong.parse("1") instanceof AtomicLong);
         assertTrue(parserAtomicLong.parse("-1") instanceof AtomicLong);
 
-        assertEquals(0L, ((AtomicLong) parserAtomicLong.parse("0")).get());
-        assertEquals(1L, ((AtomicLong) parserAtomicLong.parse("1")).get());
-        assertEquals(-1L, ((AtomicLong) parserAtomicLong.parse("-1")).get());
+        assertEquals(0L, ((AtomicLong)parserAtomicLong.parse("0")).get());
+        assertEquals(1L, ((AtomicLong)parserAtomicLong.parse("1")).get());
+        assertEquals(-1L, ((AtomicLong)parserAtomicLong.parse("-1")).get());
     }
+
 
     @Test
     public void testBigDecimal () {
@@ -201,6 +196,7 @@ public class ValueParserTests {
         assertEquals(BigDecimal.valueOf(1.2e-05), parserBigDecimal.parse("1.2e-05"));
     }
 
+
     @Test
     public void testBigInteger () {
         assertNull(parserBigInteger.parse(null));
@@ -215,9 +211,10 @@ public class ValueParserTests {
 
         assertEquals(BigInteger.ZERO, parserBigInteger.parse("0"));
         assertEquals(BigInteger.ONE, parserBigInteger.parse("1"));
-        assertEquals(-1, ((BigInteger) parserBigInteger.parse("-1")).intValue());
+        assertEquals(-1, ((BigInteger)parserBigInteger.parse("-1")).intValue());
         assertEquals(new BigInteger(BIG_INT), parserBigInteger.parse(BIG_INT));
     }
+
 
     @Test
     public void testBoolean () {
@@ -247,30 +244,31 @@ public class ValueParserTests {
         assertTrue(parserBoolean.parse("0") instanceof Boolean);
         assertTrue(parserBoolean.parse("1") instanceof Boolean);
 
-        assertFalse((Boolean) parserBoolean.parse("false"));
-        assertFalse((Boolean) parserBoolean.parse("n"));
-        assertFalse((Boolean) parserBoolean.parse("no"));
-        assertFalse((Boolean) parserBoolean.parse("False"));
-        assertFalse((Boolean) parserBoolean.parse("No"));
-        assertFalse((Boolean) parserBoolean.parse("FALSE"));
-        assertFalse((Boolean) parserBoolean.parse("NO"));
-        assertFalse((Boolean) parserBoolean.parse("N"));
-        assertFalse((Boolean) parserBoolean.parse("0"));
+        assertFalse((Boolean)parserBoolean.parse("false"));
+        assertFalse((Boolean)parserBoolean.parse("n"));
+        assertFalse((Boolean)parserBoolean.parse("no"));
+        assertFalse((Boolean)parserBoolean.parse("False"));
+        assertFalse((Boolean)parserBoolean.parse("No"));
+        assertFalse((Boolean)parserBoolean.parse("FALSE"));
+        assertFalse((Boolean)parserBoolean.parse("NO"));
+        assertFalse((Boolean)parserBoolean.parse("N"));
+        assertFalse((Boolean)parserBoolean.parse("0"));
 
-        assertTrue((Boolean) parserBoolean.parse(BOOLEAN_TRUE));
-        assertTrue((Boolean) parserBoolean.parse("y"));
-        assertTrue((Boolean) parserBoolean.parse("yes"));
-        assertTrue((Boolean) parserBoolean.parse("True"));
-        assertTrue((Boolean) parserBoolean.parse("Yes"));
-        assertTrue((Boolean) parserBoolean.parse("TRUE"));
-        assertTrue((Boolean) parserBoolean.parse("YES"));
-        assertTrue((Boolean) parserBoolean.parse("Y"));
-        assertTrue((Boolean) parserBoolean.parse("1"));
+        assertTrue((Boolean)parserBoolean.parse(BOOLEAN_TRUE));
+        assertTrue((Boolean)parserBoolean.parse("y"));
+        assertTrue((Boolean)parserBoolean.parse("yes"));
+        assertTrue((Boolean)parserBoolean.parse("True"));
+        assertTrue((Boolean)parserBoolean.parse("Yes"));
+        assertTrue((Boolean)parserBoolean.parse("TRUE"));
+        assertTrue((Boolean)parserBoolean.parse("YES"));
+        assertTrue((Boolean)parserBoolean.parse("Y"));
+        assertTrue((Boolean)parserBoolean.parse("1"));
 
-        assertTrue((Boolean) parserBoolean.parse(Boolean.TRUE.toString()));
-        assertFalse((Boolean) parserBoolean.parse(Boolean.FALSE.toString()));
-        assertTrue((Boolean) parserBoolean.parse(String.valueOf(BooleanConverter.NUMERICAL_SIGN_TRUE)));
+        assertTrue((Boolean)parserBoolean.parse(Boolean.TRUE.toString()));
+        assertFalse((Boolean)parserBoolean.parse(Boolean.FALSE.toString()));
+        assertTrue((Boolean)parserBoolean.parse(String.valueOf(BooleanConverter.NUMERICAL_SIGN_TRUE)));
     }
+
 
     @Test
     public void testByte () {
@@ -284,10 +282,11 @@ public class ValueParserTests {
         assertTrue(parserByte.parse("1") instanceof Byte);
         assertTrue(parserByte.parse("-1") instanceof Byte);
 
-        assertEquals((byte) 0, parserByte.parse("0"));
-        assertEquals((byte) 1, parserByte.parse("1"));
-        assertEquals((byte) -1, parserByte.parse("-1"));
+        assertEquals((byte)0, parserByte.parse("0"));
+        assertEquals((byte)1, parserByte.parse("1"));
+        assertEquals((byte)-1, parserByte.parse("-1"));
     }
+
 
     @Test
     public void testChar () {
@@ -308,6 +307,7 @@ public class ValueParserTests {
         assertEquals('a', parserChar.parse("a"));
         assertEquals('*', parserChar.parse("*"));
     }
+
 
     @Test
     public void testDouble () {
@@ -336,6 +336,7 @@ public class ValueParserTests {
         assertEquals(-1.033E+03, parserDouble.parse("-1.033E+03"));
     }
 
+
     @Test
     public void testFloat () {
         assertNull(parserFloat.parse(null));
@@ -363,6 +364,26 @@ public class ValueParserTests {
         assertEquals(-1.033E+03f, parserFloat.parse("-1.033E+03F"));
     }
 
+
+    @Test
+    public void testImplementInterface () {
+        assertTrue(parserAtomicBoolean instanceof ValueParser);
+        assertTrue(parserAtomicInteger instanceof ValueParser);
+        assertTrue(parserAtomicLong instanceof ValueParser);
+        assertTrue(parserBigDecimal instanceof ValueParser);
+        assertTrue(parserBigInteger instanceof ValueParser);
+        assertTrue(parserBoolean instanceof ValueParser);
+        assertTrue(parserByte instanceof ValueParser);
+        assertTrue(parserChar instanceof ValueParser);
+        assertTrue(parserDouble instanceof ValueParser);
+        assertTrue(parserFloat instanceof ValueParser);
+        assertTrue(parserInteger instanceof ValueParser);
+        assertTrue(parserLong instanceof ValueParser);
+        assertTrue(parserShort instanceof ValueParser);
+        assertTrue(parserString instanceof ValueParser);
+    }
+
+
     @Test
     public void testInteger () {
         assertNull(parserInteger.parse(null));
@@ -380,6 +401,7 @@ public class ValueParserTests {
         assertEquals(1, parserInteger.parse("1"));
         assertEquals(-1, parserInteger.parse("-1"));
     }
+
 
     @Test
     public void testLong () {
@@ -399,6 +421,7 @@ public class ValueParserTests {
         assertEquals(-1L, parserLong.parse("-1"));
     }
 
+
     @Test
     public void testShort () {
         assertNull(parserShort.parse(null));
@@ -413,10 +436,11 @@ public class ValueParserTests {
         assertTrue(parserShort.parse("1") instanceof Short);
         assertTrue(parserShort.parse("-1") instanceof Short);
 
-        assertEquals((short) 0, parserShort.parse("0"));
-        assertEquals((short) 1, parserShort.parse("1"));
-        assertEquals((short) -1, parserShort.parse("-1"));
+        assertEquals((short)0, parserShort.parse("0"));
+        assertEquals((short)1, parserShort.parse("1"));
+        assertEquals((short)-1, parserShort.parse("-1"));
     }
+
 
     @Test
     public void testString () {

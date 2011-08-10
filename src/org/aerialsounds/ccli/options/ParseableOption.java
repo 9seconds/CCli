@@ -38,59 +38,123 @@ abstract public class ParseableOption
     extends AbstractOption {
 
 
-    static protected boolean haveInlineDelimeter (final String option) {
-        return option.indexOf(STRING_INLINE_DELIMETER) != -1;
-    }
+
+// ===============================================================================================================
+// S T A T I C   F I E L D S
+// ===============================================================================================================
 
 
-    static public boolean isPureNumerical (final String option) {
-        return numericalRegexp.matcher(option).matches();
-    }
 
     static protected final int    patternFlags;
     static public    final String STRING_INLINE_DELIMETER;
     static private   final Pattern numericalRegexp;
 
+
+
+// ===============================================================================================================
+// S T A T I C   I N I T I A L I Z A T O R
+// ===============================================================================================================
+
+
+
     static {
         patternFlags            = Pattern.UNICODE_CASE;
         STRING_INLINE_DELIMETER = "=".intern();
         numericalRegexp         = Pattern.compile("^\\d+$", patternFlags);
-    }
+    } /* static */
 
 
-    protected final ValueParser parser;
+
+// ===============================================================================================================
+// S T A T I C   M E T H O D S
+// ===============================================================================================================
 
 
-    public ParseableOption (final OptionTypes optionType, final String name, final DataContainer container)
-        throws DataIsNotValid {
+
+    static protected boolean
+    haveInlineDelimeter (final String option) {
+        return option.indexOf(STRING_INLINE_DELIMETER) != -1;
+    } /* haveInlineDelimeter */
+
+
+    static public boolean
+    isPureNumerical (final String option) {
+        return numericalRegexp.matcher(option).matches();
+    } /* isPureNumerical */
+
+
+
+// ===============================================================================================================
+// F I E L D S
+// ===============================================================================================================
+
+
+
+    private final ValueParser parser;
+
+
+
+// ===============================================================================================================
+// C O N S T R U C T O R S
+// ===============================================================================================================
+
+
+    public
+    ParseableOption (final OptionTypes optionType, final String name, final DataContainer container)
+    throws DataIsNotValid {
         super(optionType, name, container);
         parser = getValueType().createParser();
-    }
+    } /* ParseableOption */
 
 
-    public boolean appropriate (final String value) {
+
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
+
+
+
+    public boolean
+    appropriate (final String value) {
         return value.equals(fullName);
-    }
+    } /* appropriate */
 
 
-    public String getInlineValue (final String option) {
+    final public String
+    getInlineValue (final String option) {
         return ( haveInlineValue(option) )
             ? extractInlineValue(option)
             : null;
-    }
+    } /* getInlineValue */
+
+
+    final public Object
+    parse (final String value) {
+        return parser.parse(value);
+    } /* parse */
+
+
+    abstract public boolean
+    haveInlineValue (final String option);
+
+
+
+// ===============================================================================================================
+// P R O T E C T E D   M E T H O D S
+// ===============================================================================================================
+
+
 
     @Override
-    protected boolean isDataValid () {
+    protected boolean
+    isDataValid () {
         return super.isDataValid() && !haveInlineDelimeter(fullName);
-    }
+    } /* isDataValid */
 
 
-    public Object parse (final String value) {
-        return parser.parse(value);
-    }
+    abstract protected String
+    extractInlineValue (final String option);
 
 
-    abstract public    boolean haveInlineValue    (final String option);
-    abstract protected String  extractInlineValue (final String option);
+} /* class ParseableOption */
 
-}

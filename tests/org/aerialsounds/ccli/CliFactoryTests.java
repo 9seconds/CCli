@@ -7,7 +7,6 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
@@ -19,9 +18,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+
+
 package org.aerialsounds.ccli;
 
-import static org.junit.Assert.*;
+
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.options.LongOption;
@@ -29,22 +36,41 @@ import org.aerialsounds.ccli.options.NumericalOption;
 import org.aerialsounds.ccli.options.ParseableOption;
 import org.aerialsounds.ccli.options.ShortOption;
 import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
+
 import org.junit.Before;
 import org.junit.Test;
 
 
 
-
 public class CliFactoryTests {
 
-    private CliFactory factory;
+
+    private CliFactory    factory;
     private DataContainer container;
+
 
     @Before
     public void setUp () {
         factory = new CliFactory(new CCli(null));
         container = factory.createDataContainer(10, ValueTypes.INTEGER, "Just dumb test value");
     }
+
+
+    @Test
+    public void createCustomOption () {
+        ParseableOption o = factory.createOption(OptionTypes.CUSTOM, "-DINLINE", container);
+        assertTrue(o instanceof LongOption);
+    }
+
+
+    @Test (expected = DataIsNotValid.class)
+    public void createCustomOptionWithFail () {
+        @SuppressWarnings ("unused") ParseableOption o = factory.createOption(
+            OptionTypes.CUSTOM,
+            "-DINLINE=",
+            container);
+    }
+
 
     @Test
     public void createDataContainers () {
@@ -56,30 +82,6 @@ public class CliFactoryTests {
         assertNull(container.getValue());
     }
 
-    @Test
-    public void createNumericalOption () {
-        container.setValueType(ValueTypes.ATOMIC_BOOLEAN);
-        ParseableOption o = factory.createOption(OptionTypes.SHORT, "99", container);
-        assertTrue(o instanceof NumericalOption);
-    }
-
-    @Test(expected = DataIsNotValid.class)
-    public void createNumericalOptionWithFail () {
-        @SuppressWarnings ("unused")
-        ParseableOption o = factory.createOption(OptionTypes.SHORT, "99", container);
-    }
-
-    @Test
-    public void createShortOption () {
-        ParseableOption o = factory.createOption(OptionTypes.SHORT, "v", container);
-        assertTrue(o instanceof ShortOption);
-    }
-
-    @Test(expected = DataIsNotValid.class)
-    public void createShortOptionWithFail () {
-        @SuppressWarnings ("unused")
-        ParseableOption o = factory.createOption(OptionTypes.SHORT, "vvv", container);
-    }
 
     @Test
     public void createLongOption () {
@@ -87,22 +89,37 @@ public class CliFactoryTests {
         assertTrue(o instanceof LongOption);
     }
 
-    @Test(expected = DataIsNotValid.class)
+
+    @Test (expected = DataIsNotValid.class)
     public void createLongOptionWithFail () {
-        @SuppressWarnings ("unused")
-        ParseableOption o = factory.createOption(OptionTypes.LONG, "vbr-n=ew", container);
+        @SuppressWarnings ("unused") ParseableOption o = factory.createOption(OptionTypes.LONG, "vbr-n=ew", container);
     }
+
 
     @Test
-    public void createCustomOption () {
-        ParseableOption o = factory.createOption(OptionTypes.CUSTOM, "-DINLINE", container);
-        assertTrue(o instanceof LongOption);
+    public void createNumericalOption () {
+        container.setValueType(ValueTypes.ATOMIC_BOOLEAN);
+        ParseableOption o = factory.createOption(OptionTypes.SHORT, "99", container);
+        assertTrue(o instanceof NumericalOption);
     }
 
-    @Test(expected = DataIsNotValid.class)
-    public void createCustomOptionWithFail () {
-        @SuppressWarnings ("unused")
-        ParseableOption o = factory.createOption(OptionTypes.CUSTOM, "-DINLINE=", container);
+
+    @Test (expected = DataIsNotValid.class)
+    public void createNumericalOptionWithFail () {
+        @SuppressWarnings ("unused") ParseableOption o = factory.createOption(OptionTypes.SHORT, "99", container);
+    }
+
+
+    @Test
+    public void createShortOption () {
+        ParseableOption o = factory.createOption(OptionTypes.SHORT, "v", container);
+        assertTrue(o instanceof ShortOption);
+    }
+
+
+    @Test (expected = DataIsNotValid.class)
+    public void createShortOptionWithFail () {
+        @SuppressWarnings ("unused") ParseableOption o = factory.createOption(OptionTypes.SHORT, "vvv", container);
     }
 
 }

@@ -35,39 +35,67 @@ public class LongOption
     extends ParseableOption {
 
 
+
+// ===============================================================================================================
+// F I E L D S
+// ===============================================================================================================
+
+
+
     protected final String fullNameWithDelimeter;
 
 
-    public LongOption (final OptionTypes optionType, final String name, final DataContainer container)
-        throws DataIsNotValid {
+
+ // ===============================================================================================================
+ // C O N S T R U C T O R S
+ // ===============================================================================================================
+
+
+
+    public
+    LongOption (final OptionTypes optionType, final String name, final DataContainer container)
+    throws DataIsNotValid {
         super(optionType, name, container);
         fullNameWithDelimeter = fullName + STRING_INLINE_DELIMETER;
-    }
+    } /* LongOption */
 
 
     @Override
-    public boolean appropriate (final String value) {
+    public boolean
+    appropriate (final String value) {
         return super.appropriate(value) || value.startsWith(fullNameWithDelimeter);
-    }
+    } /* appropriate */
 
 
     @Override
-    protected String extractInlineValue (final String option) {
+    public boolean
+    haveInlineValue (final String option) {
+        return option.indexOf(STRING_INLINE_DELIMETER) == fullName.length();
+    } /* haveInlineValue */
+
+
+
+// ===============================================================================================================
+// P R O T E C T E D   M E T H O D S
+// ===============================================================================================================
+
+
+
+    @Override
+    protected String
+    extractInlineValue (final String option) {
         return ( option.endsWith(STRING_INLINE_DELIMETER) )
             ? "".intern()
             : option.substring(fullName.length() + 1);
-    }
+    } /* extractInlineValue */
 
 
     @Override
-    public boolean haveInlineValue (final String option) {
-        return option.indexOf(STRING_INLINE_DELIMETER) == fullName.length();
-    }
-
-
-    @Override
-    protected boolean isDataValid () {
+    protected boolean
+    isDataValid () {
         return super.isDataValid() && optionType != OptionTypes.SHORT;
-    }
+    } /* isDataValid */
 
-}
+
+} /* class LongOption */
+

@@ -34,13 +34,14 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import static org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
+
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.optionobservable.Observable;
 import org.aerialsounds.ccli.optionobservable.Observer;
 import org.aerialsounds.ccli.options.AbstractOption;
 import org.aerialsounds.ccli.options.ParseableOption;
 import org.aerialsounds.ccli.options.ShortOption;
-import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 import org.aerialsounds.ccli.valueparsers.BooleanConverter;
 
 
@@ -49,80 +50,122 @@ public class CCli
     implements Observer {
 
 
+
+// ===============================================================================================================
+// E X C E P T I O N S
+// ===============================================================================================================
+
+
+
     static public class CannotCreateOption
         extends RuntimeException {
         private static final long serialVersionUID = -5248825722401579070L;
-    }
+    } /* class CannotCreateOption */
+
 
     static public class HaveSuchOption
         extends RuntimeException {
         private static final long serialVersionUID = 5086623510834120688L;
-    }
+    } /* class HaveSuchOption */
+
 
     static public class CannotParse
         extends RuntimeException {
         private static final long serialVersionUID = 6228517677445066958L;
-    }
+    } /* class CannotParse */
+
 
     static public class NothingToParse
         extends RuntimeException {
         private static final long serialVersionUID = -6990780110727348311L;
-    }
+    } /* class NothingToParse */
+
 
     static public class UnexpectedOption
         extends RuntimeException {
 
         private static final long serialVersionUID = -7689966940656377554L;
 
-        public UnexpectedOption (final String currentArgument) {
+        public
+        UnexpectedOption (final String currentArgument) {
             super(currentArgument);
-        }
+        } /* UnexpectedOption */
 
-    }
+    } /* class UnexpectedOption */
+
 
     static public class UnexpectedEndOfArgumentList
         extends RuntimeException {
         private static final long serialVersionUID = -4104774535367707313L;
-    }
+    } /* class UnexpectedEndOfArgumentList */
+
 
     static public class IncorrectParsingOfOption
         extends RuntimeException {
 
         private static final long serialVersionUID = -7594488127011543528L;
 
-        public IncorrectParsingOfOption (final String option) {
+        public
+        IncorrectParsingOfOption (final String option) {
             super(option);
-        }
+        } /* IncorrectParsingOfOption */
 
-    }
+    } /* class IncorrectParsingOfOption */
+
 
     static public class DataIsNotConsistent
         extends RuntimeException {
         private static final long serialVersionUID = 2822892301721580774L;
-    }
+    } /* class DataIsNotConsistent */
 
 
-    final public void bind (final Option one, final Option another) throws CannotBind {
+
+// ===============================================================================================================
+// S T A T I C   M E T H O D S
+// ===============================================================================================================
+
+
+
+    static public void
+    bind (final Option one, final Option another) throws CannotBind {
         one.bind(another);
-    }
+    } /* bind */
+
+
+
+// ===============================================================================================================
+// F I E L D S
+// ===============================================================================================================
+
 
 
     protected final String[]                               args;
+
     protected final CliFactory                             factory;
+    private   final CliHelpGenerator                       helpGenerator;
+
     protected final Map<DataContainer,Set<AbstractOption>> containers;
     protected final Collection<ParseableOption>            options;
     protected final Collection<String>                     appArguments;
+
     protected       boolean                                parsed;
 
-    private   final CliHelpGenerator                       helpGenerator;
 
 
-    public CCli (final String[] args) {
+// ===============================================================================================================
+// C O N S T R U C T O R S
+// ===============================================================================================================
+
+
+
+    public
+    CCli (final String[] args) {
         this(args, new CliHelpGenerator());
-    }
+    } /* CCli */
 
 
-    public CCli (final String[] args, final CliHelpGenerator helpGenerator) {
+    public
+    CCli (final String[] args, final CliHelpGenerator helpGenerator) {
         this.args          = args;
         this.helpGenerator = helpGenerator;
 
@@ -130,37 +173,24 @@ public class CCli
         containers   = new HashMap<DataContainer,Set<AbstractOption>>();
         options      = new LinkedList<ParseableOption>();
         appArguments = new LinkedList<String>();
-    }
+    } /* CCli */
 
 
-    protected void clearParsedData () {
-        appArguments.clear();
 
-        final Iterable<DataContainer> conainersSet = containers.keySet();
-        for ( DataContainer container : conainersSet )
-            container.dropDefined();
-
-        parsed = false;
-    }
+// ===============================================================================================================
+// P U B L I C   M E T H O D S
+// ===============================================================================================================
 
 
-    protected void confimJoin (final Iterable<ParseableOption> joined) {
-        for ( ParseableOption opt : joined )
-            opt.setValue(opt.parse(BooleanConverter.TRUE));
-    }
 
-    public boolean isParsed () {
-        return parsed;
-    }
-
-    public Option createOption (
+    final public Option
+    createOption (
         final OptionTypes type,
         final String      name,
         final Object      defaultValue,
         final ValueTypes  valueType,
         final String      help
-    )
-    throws CannotCreateOption {
+    ) throws CannotCreateOption {
         final DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
         try {
             final ParseableOption opt = factory.createOption(type, name, container);
@@ -168,18 +198,18 @@ public class CCli
             return opt;
         }
         catch ( DataIsNotValid e ) {
-            throw generateOptionCreatingException(e);
+            interruptOptionCreating(e);
         }
         catch ( HaveSuchOption e ) {
-            throw generateOptionCreatingException(e);
+            interruptOptionCreating(e);
         }
-    }
 
-    final protected CannotCreateOption generateOptionCreatingException (final Throwable e) {
-        return (CannotCreateOption) new CannotCreateOption().initCause(e);
-    }
+        return null;
+    } /* createOption */
 
-    public void remove (final Option option) {
+
+    public void
+    remove (final Option option) {
         if ( option instanceof ParseableOption ) {
             final ParseableOption removed = (ParseableOption)option;
             if ( options.contains(removed) ) {
@@ -188,13 +218,12 @@ public class CCli
                 removed.dispose();
             }
         }
-    }
+    } /* remove */
 
-    public Iterator<String> getApplicationArguments () {
-        return appArguments.iterator();
-    }
 
-    public void parse () throws CannotParse {
+    public void
+    parse ()
+    throws CannotParse {
         if ( args == null )
             interruptParsing(new NothingToParse());
 
@@ -222,7 +251,7 @@ public class CCli
                                 ++i;
                         } else
                             interruptParsing(new UnexpectedEndOfArgumentList());
-                    else
+                    else // if ( inlineValue == null )
                         parsedValue = option.parse(inlineValue);
 
                     if ( option.getValueType().isBoolean() && parsedValue == null )
@@ -232,21 +261,95 @@ public class CCli
                         interruptParsing(new IncorrectParsingOfOption(current));
                     else
                         option.setValue(parsedValue);
-                } else if ( !parseUnknownOption(current) )
+                } else if ( !parseUnknownOption(current) ) // if ( option != null )
                     appArguments.add(current);
-            }
+            } // for ( int i = 0; i < args.length; ++i )
+
             if ( !isContainersConsistent() )
                 interruptParsing(new DataIsNotConsistent());
 
             parsed = true;
+        } // if ( !parsed )
+    } /* parse */
+
+
+    final public boolean
+    isParsed () {
+        return parsed;
+    } /* isParsed */
+
+
+    final public Iterator<String>
+    getApplicationArguments () {
+        return appArguments.iterator();
+    } /* getApplicationArguments */
+
+
+    final public String
+    help () {
+        return helpGenerator.generate(containers.values());
+    } /* help */
+
+
+    @Override
+    public void
+    update (final Observable initiator, final Object initiated) {
+        if ( initiator instanceof AbstractOption && initiated instanceof AbstractOption ) {
+            final DataContainer              firstContainer  = ((AbstractOption)initiator).getContainer();
+            final DataContainer              secondContainer = ((AbstractOption)initiated).getContainer();
+            final Collection<AbstractOption> firstSet        = containers.get(firstContainer);
+            final Collection<AbstractOption> secondSet       = containers.get(secondContainer);
+
+            if ( firstSet != null && secondSet != null && firstSet != secondSet ) {
+                firstSet.addAll(secondSet);
+                for ( AbstractOption opt : secondSet )
+                    opt.setContainer(firstContainer);
+                containers.remove(secondContainer);
+            }
         }
-    }
+    } /* update */
 
 
-    protected Iterable<ParseableOption> findJoinedOptions (final String current) {
+
+// ===============================================================================================================
+// P R O T E C T E D   M E T H O D S
+// ===============================================================================================================
+
+
+
+    protected ParseableOption
+    findOption (final String option) {
+        final Iterator<ParseableOption> it = options.iterator();
+        while ( it.hasNext() ) {
+            final ParseableOption entry = it.next();
+            if ( entry.appropriate(option) )
+                return entry;
+        }
+
+        return null;
+    } /* findOption */
+
+
+    final protected boolean
+    parseUnknownOption (final String current) {
+        final Iterable<ParseableOption> joined = findJoinedOptions(current);
+        if ( joined != null ) {
+            confimJoin(joined);
+            return true;
+        }
+        return false;
+    } /* parseUnknownOption */
+
+
+    protected Iterable<ParseableOption>
+    findJoinedOptions (final String current) {
         final String prefix = OptionTypes.SHORT.getPrefix();
 
-        if ( !current.startsWith(OptionTypes.LONG.getPrefix()) && current.startsWith(prefix) && !ShortOption.haveNumbers(current) ) {
+        if (
+               !current.startsWith(OptionTypes.LONG.getPrefix())
+            && current.startsWith(prefix)
+            && !ShortOption.haveNumbers(current)
+        ) {
             final char[]                      currentLine = current.substring(prefix.length()).toCharArray();
             final Collection<ParseableOption> list        = new LinkedList<ParseableOption>();
 
@@ -262,66 +365,33 @@ public class CCli
             return list;
         } else
             return null;
-    }
+    } /* findJoinedOptions */
 
 
-    protected ParseableOption findOption (final String option) {
-        final Iterator<ParseableOption> it = options.iterator();
-        while ( it.hasNext() ) {
-            final ParseableOption entry = it.next();
-            if ( entry.appropriate(option) )
-                return entry;
-        }
-
-        return null;
-    }
-
-
-    protected void interruptParsing (final RuntimeException cause) throws CannotParse {
-        clearParsedData();
-        throw (CannotParse) new CannotParse().initCause(cause);
-    }
-
-
-    private boolean isContainersConsistent () {
-        final Iterable<DataContainer> containersSet = containers.keySet();
-        for ( DataContainer container : containersSet )
-            if ( !container.isConsistent() )
-                return false;
-        return true;
-    }
-
-
-    protected boolean parseUnknownOption (final String current) {
-        final Iterable<ParseableOption> joined = findJoinedOptions(current);
-        if ( joined != null ) {
-            confimJoin(joined);
-            return true;
-        }
-        return false;
-    }
-
-
-    protected void register (final DataContainer container, final ParseableOption opt) throws HaveSuchOption {
+    protected void
+    register (final DataContainer container, final ParseableOption opt)
+    throws HaveSuchOption {
         final String name = opt.getFullName();
         for ( Option o : options )
             if ( name.equals(o.getFullName()) )
                 throw new HaveSuchOption();
 
-            registerContainer(container, opt);
-            options.add(opt);
-            parsed = false;
-    }
+        registerContainer(container, opt);
+        options.add(opt);
+        parsed = false;
+    } /* register */
 
 
-    protected void registerContainer (final DataContainer container, final AbstractOption opt) {
+    final protected void
+    registerContainer (final DataContainer container, final AbstractOption opt) {
         final Set<AbstractOption> containerSet = new HashSet<AbstractOption>();
         containerSet.add(opt);
         containers.put(container, containerSet);
-    }
+    } /* registerContainer */
 
 
-    protected void removeContainer (final AbstractOption option) {
+    final protected void
+    removeContainer (final AbstractOption option) {
         final DataContainer container                 = option.getContainer();
         final Collection<AbstractOption> containerSet = containers.get(container);
         if ( containerSet != null ) {
@@ -329,28 +399,59 @@ public class CCli
             if ( containerSet.isEmpty() )
                 containers.remove(container);
         }
-    }
+    } /* removeContainer */
 
 
-    @Override
-    public void update (final Observable initiator, final Object initiated) {
-        if ( initiator != initiated && initiator instanceof AbstractOption && initiated instanceof AbstractOption ) {
-            final DataContainer              firstContainer  = ((AbstractOption)initiator).getContainer();
-            final DataContainer              secondContainer = ((AbstractOption)initiated).getContainer();
-            final Collection<AbstractOption> firstSet        = containers.get(firstContainer);
-            final Collection<AbstractOption> secondSet       = containers.get(secondContainer);
+    final protected boolean
+    isContainersConsistent () {
+        final Iterable<DataContainer> containersSet = containers.keySet();
+        for ( DataContainer container : containersSet )
+            if ( !container.isConsistent() )
+                return false;
+        return true;
+    } /* isContainersConsistent */
 
-            if ( firstSet != null && secondSet != null ) {
-                firstSet.addAll(secondSet);
-                for ( AbstractOption opt : secondSet )
-                    opt.setContainer(firstContainer);
-                containers.remove(secondContainer);
-            }
-        }
-    }
 
-    final public String generateHelp () {
-        return helpGenerator.generate(containers.values());
-    }
+    final protected void
+    clearParsedData () {
+        appArguments.clear();
 
-}
+        final Iterable<DataContainer> conainersSet = containers.keySet();
+        for ( DataContainer container : conainersSet )
+            container.dropDefined();
+
+        parsed = false;
+    } /* clearParsedData */
+
+
+
+// ===============================================================================================================
+// P R I V A T E   M E T H O D S
+// ===============================================================================================================
+
+
+
+    private void
+    confimJoin (final Iterable<ParseableOption> joined) {
+        for ( ParseableOption opt : joined )
+            opt.setValue(opt.parse(BooleanConverter.TRUE));
+    } /* confimJoin */
+
+
+    private void
+    interruptParsing (final RuntimeException cause)
+    throws CannotParse {
+        clearParsedData();
+        throw (CannotParse) new CannotParse().initCause(cause);
+    } /* interruptParsing */
+
+
+    private void
+    interruptOptionCreating (final Throwable e)
+    throws CannotCreateOption {
+        throw (CannotCreateOption) new CannotCreateOption().initCause(e);
+    } /* interruptOptionCreating */
+
+
+} /* class CCli */
+
