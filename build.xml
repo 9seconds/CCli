@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="CleanCLI" default="help">
+
+
+    <property file="build.properties" />
+    <property name="jar.filename" value="${jar.name}_${jar.version}" />
+
+
+    <path id="classpath.ccli">
+        <pathelement path="${java.class.path}" />
+    </path>
+
+
+    <path id="classpath.tests">
+        <pathelement location="${junit}" />
+        <pathelement path="${dir.build}" />
+        <path refid="classpath.ccli" />
+    </path>
+
+
+
+    <target name="help" description="Default target">
+        <echo>Please provide ANT with explicit target. You can use following 2 targets:</echo>
+        <echo>    1. 'production' target is used to produce production-ready JAR;</echo>
+        <echo>    2. 'justlib' target is used to produce JAR without any guarantee of quality.</echo>
+    </target>
+
+    <target name="production" description="Do production build" depends="build.production, compile, test, make.jar" />
+    <target name="justlib" description="Do build of JAR without any guarantee of quality" depends="build.justlib, compile, make.jar" />
+
+
+    <target name="build.production" description="Defines 'production' build">
+        <property name="production" value="true" />
+    </target>
+
+    <target name="build.justlib"  description="Defines 'justlib' build" />
+
+
+    <target name="make.builddir" description="Making dirs for build" depends="clean">
+        <mkdir dir="${dir.build}" />
+    </target>
+
+
+    <target name="clean" description="Removing all compiled files">
+        <delete dir="${dir.build}" />
+        <delete file="${jar.filename}.jar" />
+    </target>
+
+
+    <target name="compile" description="Compilation of source code" depends="make.builddir, compile.clean, compile.dirty" />
+
+
+    <target name="compile.dirty" description="Quick compilation of classes" depends="make.builddir" unless="production">
+        <javac srcdir="${dir.src}"
+               destdir="${dir.build}"
+               compiler="modern"
+               target="${compile.target}"
+               encoding="UTF-8" 
+               includeAntRuntime="false"
+               classpathref="classpath.ccli"
+        />
+    </target>
+
+
+    <target name="compile.clean" description="Full compilation of classes" depends="make.builddir" if="production">
+        <javac srcdir="${dir.src}"
+               destdir="${dir.build}"
+               compiler="modern"
+               optimize="on"
+               debug="off"
+               target="${compile.target}"
+               encoding="UTF-8" 
+               includeAntRuntime="false"
+               classpathref="classpath.ccli"
+        >
+            <compilerarg value="-Xlint:all -Werror" />
+        </javac>
+    </target>
+
+
+    <target name="compile.test" description="Quick compilation of unittests" depends="compile">
+        <javac srcdir="${dir.test}"
+               destdir="${dir.build}"
+               compiler="modern"
+               optimize="on"
+               debug="off"
+               target="${compile.target}"
+               encoding="UTF-8" 
+               includeAntRuntime="false"
+               classpathref="classpath.tests"
+        />
+    </target>
+
+
+    <target name="test" description="Run unittests for application" depends="compile, compile.test">
+        <junit printsummary="on" fork="yes" haltonfailure="on" haltonerror="on">
+            <classpath refid="classpath.tests" />
+            <formatter type="plain" />
+            <test name="unittests.AllTests" outfile="${results.unittest}" />
+        </junit>
+    </target>
+
+
+    <target name="make.jar" depends="compile">
+        <jar destfile="${jar.filename}.jar" basedir="${dir.build}" excludes="**/*Tests.class" />
+    </target>
+
+
+</project>
+
