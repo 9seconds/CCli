@@ -93,7 +93,7 @@ public class CliHelpGenerator {
     generateHelp (final Set<AbstractOption> set) {
         if ( !set.isEmpty() ) {
             builder.append("\n    ");
-            builder.append(set.iterator().next().getFullName());
+            builder.append(set.iterator().next().getHelp());
             builder.append("\n");
         }
     } /* generateHelp */
