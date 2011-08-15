@@ -45,7 +45,35 @@ import org.aerialsounds.ccli.options.ShortOption;
 import org.aerialsounds.ccli.valueparsers.BooleanConverter;
 
 
-
+/**
+ * <p>This class represents repository for all created {@linkplain Option options}
+ * and should be used for parsing application commands. It manages options, handles option bindings
+ * and stores data containers for each option (or for binded set).</p>
+ *
+ * <p>The workflow as is: user creates Options with given option type ({@linkplain OptionTypes#SHORT short}
+ * with single hyphen, {@linkplain OptionTypes#LONG long} with double hyphen or {@linkplain OptionTypes#CUSTOM custom}
+ * with user defined prefix). After creating, user may remove some of them from repository. User may bind
+ * option to other created options but main idea is transparent binding. User may suppose binding as internal
+ * option process but it is de-facto encapsulated in {@code CCli} object.</p>
+ *
+ * <p>After creating of all options, user invokes {@link CCli#parse parse()} method.
+ * It can throw {@link CannotParse CannotParse} exception if something is wrong with command line.
+ * If everything is OK, user can obtain parsed values with {@link Option#getValue getValue()}
+ * method of each {@code Option}.<p>
+ *
+ * <p>After parsing, user also may obtain application arguments (e.g filenames) with
+ * {@link CCli#getApplicationArguments getApplicationArguments()} method. Also, user may generate
+ * help with {@link CCli#help help()} method.</p>
+ *
+ * @see Option
+ * @see CannotParse
+ * @see OptionTypes
+ *
+ * @since 1.0
+ *
+ * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+ *
+ */
 public class CCli
     implements Observer {
 
@@ -56,32 +84,129 @@ public class CCli
 // ===============================================================================================================
 
 
-
-    static public class CannotCreateOption
+    /**
+     * <p>This exception should be thrown when {@code CCli} repository is unable to create option
+     * with given parameters. There are 2 reasons for this fault: full name of option (with prefixes)
+     * is already presented in repository or it contains depreciated characters such as
+     * {@code "="} or not correctly defined. You can obtain it as a cause of raised exception.</p>
+     *
+     * <p>Please not that validation of data consistency performed only during parsing
+     * operation.</p>
+     *
+     * @see HaveSuchOption
+     * @see org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid DataIsNotValid
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    public class CannotCreateOption
         extends RuntimeException {
         private static final long serialVersionUID = -5248825722401579070L;
     } /* class CannotCreateOption */
 
 
-    static public class HaveSuchOption
+    /**
+     * <p>This exception should be raised if user tries to create option with full name, already
+     * registered in {@code CCli} repository. Note that full name is concatenation of option prefix
+     * and own name.</p>
+     *
+     * <p>For example, {@linkplain OptionTypes#SHORT short} option with {@code "z"} name is equal to
+     * {@linkplain OptionTypes#CUSTOM custom} option with {@code "-z"} name. You can obtain generated
+     * full name with {@link Option#getFullName getFullName()} method of {@link Option Option}.</p>
+     *
+     * <p>This exception implicates {@link CannotCreateOption} exception and acts as its cause.</p>
+     *
+     * @see Option
+     * @see OptionTypes
+     * @see CannotCreateOption
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    public class HaveSuchOption
         extends RuntimeException {
         private static final long serialVersionUID = 5086623510834120688L;
     } /* class HaveSuchOption */
 
 
-    static public class CannotParse
+    /**
+     * <p>This exception should be raised if parsing is not succesfull and there were some errors during
+     * this procedure. You can obtain the reason of fault as cause of such exception.</p>
+     *
+     * <p>Please not that parsed values of each created {@linkplain Option options} are flushed if such fault
+     * appears.</p>
+     *
+     * <p>There are several errors that caused this fault. Please see references for detailed description.</p>
+     *
+     * @see NothingToParse
+     * @see UnexpectedOption
+     * @see UnexpectedEndOfArgumentList
+     * @see IncorrectParsingOfOption
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    public class CannotParse
         extends RuntimeException {
         private static final long serialVersionUID = 6228517677445066958L;
     } /* class CannotParse */
 
 
-    static public class NothingToParse
+    /**
+     * <p>This exception should be raised if application arguments is {@code null} for some reason. Of course
+     * it is not real fault, but it can be coding fault. Application arguments should not be {@code null}
+     * with normal work flow. It can be empty (with 0 elements in {@code args} array) of course, but not
+     * {@code null}. If you ever get such exception, please check your code.</p>
+     *
+     * <p>This exception implicates {@link CannotParse} exception and acts as its cause.</p>
+     *
+     * @see CannotParse
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    public class NothingToParse
         extends RuntimeException {
         private static final long serialVersionUID = -6990780110727348311L;
     } /* class NothingToParse */
 
 
-    static public class UnexpectedOption
+    /**
+     * <p>This exception should be raised if {@code CCli} meets unexpected option during parsing. For example,
+     * it can be option after application arguments list. {@code CCli} allows application arguments to be placed
+     * only at the end of list.</p>
+     *
+     * <p>Such list is fault:</p>
+     *
+     * <pre><code>
+     *     java app.jar -z --quiet mighty_source.c --compile=true
+     * </code></pre>
+     *
+     * <p>{@code mighty_source.c} should be placed at the end of list:</p>
+     *
+     * <pre><code>
+     *     java app.jar -z --quiet --compile=true mighty_source.c
+     * </code></pre>
+     *
+     * <p>This exception implicates {@link CannotParse} exception and acts as its cause. It contains errorous
+     * option as message of this exception.</p>
+     *
+     * @see CannotParse
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    public class UnexpectedOption
         extends RuntimeException {
 
         private static final long serialVersionUID = -7689966940656377554L;
@@ -94,13 +219,66 @@ public class CCli
     } /* class UnexpectedOption */
 
 
-    static public class UnexpectedEndOfArgumentList
+    /**
+     * <p>This exception should be raised if {@code CCli} meets unexpected end of argument list.</p>
+     *
+     * <p>Example of fault:</p>
+     *
+     * <pre><code>
+     *     java app.jar -z --quiet -q
+     * </code></pre>
+     *
+     * <p>Assume that {@code -q} option has {@link ValueTypes#INTEGER integer} value type. So what value
+     * should it have? It has not inline value as {@code -q10}. It cannot have default value because user
+     * tries to define it but made a mistake.</p>
+     *
+     * <p><strong>Please note that {@link ValueTypes#BOOLEAN boolean} and
+     * {@link ValueTypes#ATOMIC_BOOLEAN atomic boolean} options always have {@code true} value as
+     * inlined</strong>. Therefore if {@code -q} option is boolean, such fault never appears.</p>
+     *
+     * <p>This exception implicates {@link CannotParse} exception and acts as its cause.</p>
+     *
+     * @see CannotParse
+     * @see ValueTypes
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    public class UnexpectedEndOfArgumentList
         extends RuntimeException {
         private static final long serialVersionUID = -4104774535367707313L;
     } /* class UnexpectedEndOfArgumentList */
 
 
-    static public class IncorrectParsingOfOption
+    /**
+     * <p>This exception should be raised if parsed value has other type than expected.</p>
+     *
+     * <p>Example of fault:</p>
+     *
+     * <pre><code>
+     *     java app.jar -z 10
+     * </code></pre>
+     *
+     * <p>Assume that {@code -z} option has {@link ValueTypes#CHAR character} value type. 10 is numerical
+     * value so it looks like user made a mistake with input of arguments. Yes, 10 can be casted to character,
+     * but why do we need try to fix such mistake? If user wants 10 to be casted to character, he need to define
+     * it as {@code '\0010'} or something else. It is better to raise fault in this case neither to interpert
+     * value wrong.</p>
+     *
+     * <p>This exception implicates {@link CannotParse} exception and acts as its cause. It contains option with
+     * incorrect value as a message of this exception.</p>
+     *
+     * @see CannotParse
+     * @see ValueTypes
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    public class IncorrectParsingOfOption
         extends RuntimeException {
 
         private static final long serialVersionUID = -7594488127011543528L;
@@ -113,12 +291,6 @@ public class CCli
     } /* class IncorrectParsingOfOption */
 
 
-    static public class DataIsNotConsistent
-        extends RuntimeException {
-        private static final long serialVersionUID = 2822892301721580774L;
-    } /* class DataIsNotConsistent */
-
-
 
 // ===============================================================================================================
 // S T A T I C   M E T H O D S
@@ -126,6 +298,27 @@ public class CCli
 
 
 
+    /**
+     * <p>This is simple wrapper of {@link Option#bind bind()} method of {@link Option}. You can use it if you like, following lines of
+     * code are equal:</p>
+     *
+     * <pre><code>
+     *     CCli.bind(one, another);
+     *     one.bind(another);
+     * </code></pre>
+     *
+     * @param one - one {@code Option} to bind
+     * @param another - another {@code Option} to bind
+     *
+     * @throws CannotBind if given options cannot bind one to another.
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     static public void
     bind (final Option one, final Option another) throws CannotBind {
         one.bind(another);
@@ -139,16 +332,95 @@ public class CCli
 
 
 
-    protected final String[]                               args;
+    /**
+     * Raw unparsed application arguments. As a rule, it is argument of {@code main} method.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    protected final String[] args;
 
-    protected final CliFactory                             factory;
-    private   final CliHelpGenerator                       helpGenerator;
+    /**
+     * Factory which is used to create {@link Option Options} and
+     * {@link org.aerialsounds.ccli.datacontainer.DataContainer DataContainers}.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    protected final CliFactory factory;
 
+    /**
+     * Help generator.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    private final CliHelpGenerator helpGenerator;
+
+    /**
+     * <p>Contains {@link org.aerialsounds.ccli.datacontainer.DataContainer DataContainer}
+     * and set of {@link org.aerialsounds.ccli.options.AbstractOption AbstractOptions} which contains
+     * that container.</p>
+     *
+     * <p>In other words, it is {@code DataContainer} and set of binded {@code AbstractOptions}. Such
+     * mapping is used for convenient binding of options. Each {@code AbstractOption} of a binded set
+     * contains reference to the same {@code DataContainer}.</p>
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     protected final Map<DataContainer,Set<AbstractOption>> containers;
-    protected final Collection<ParseableOption>            options;
-    protected final Collection<String>                     appArguments;
 
-    protected       boolean                                parsed;
+    /**
+     * <p>A collection of {@link org.aerialsounds.ccli.options.ParseableOption ParseableOptions}.
+     * It should be used for searching appropriate options with given full name and so on.</p>
+     *
+     * <p>Please do not use {@link CCli#containers containers} field for searching purposes. It also
+     * contains all created options, but searching with {@code options} field is more faster.</p>
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    protected final Collection<ParseableOption> options;
+
+    /**
+     * <p>Stores application arguments. It is not {@link CCli#args args} collection, it is
+     * parsed values.</p>
+     *
+     * <p>For example:</p>
+     *
+     * <pre><code>
+     *     java app.jar -z --quiet --compile=true mighty_source.c
+     * </code></pre>
+     *
+     * <p>{@code mighty_source.c} should be placed in this collection after parsing.</p>
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    protected final Collection<String> appArguments;
+
+    /**
+     * Determines if repository was parsed already.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    protected boolean parsed;
 
 
 
@@ -158,12 +430,37 @@ public class CCli
 
 
 
+    /**
+     * <p>Constructor.</p>
+     *
+     * <p>Creates {@code CCli} repository with default {@link CliHelpGenerator}.</p>
+     *
+     * @param args - raw unparsed application arguments.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public
     CCli (final String[] args) {
         this(args, new CliHelpGenerator());
     } /* CCli */
 
 
+    /**
+     * <p>Constructor.</p>
+     *
+     * <p>Creates {@code CCli} repository with given {@link CliHelpGenerator} instance.</p>
+     *
+     * @param args - raw unparsed application arguments.
+     * @param helpGenerator - generator of help instance.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public
     CCli (final String[] args, final CliHelpGenerator helpGenerator) {
         this.args          = args;
@@ -264,9 +561,6 @@ public class CCli
                 } else if ( !parseUnknownOption(current) ) // if ( option != null )
                     appArguments.add(current);
             } // for ( int i = 0; i < args.length; ++i )
-
-            if ( !isContainersConsistent() )
-                interruptParsing(new DataIsNotConsistent());
 
             parsed = true;
         } // if ( !parsed )
@@ -404,10 +698,10 @@ public class CCli
 
     final protected boolean
     isContainersConsistent () {
-        final Iterable<DataContainer> containersSet = containers.keySet();
-        for ( DataContainer container : containersSet )
+        for ( DataContainer container : containers.keySet() )
             if ( !container.isConsistent() )
                 return false;
+
         return true;
     } /* isContainersConsistent */
 

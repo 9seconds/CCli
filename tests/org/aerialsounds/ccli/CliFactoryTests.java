@@ -30,6 +30,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.options.LongOption;
 import org.aerialsounds.ccli.options.NumericalOption;
@@ -99,6 +101,7 @@ public class CliFactoryTests {
     @Test
     public void createNumericalOption () {
         container.setValueType(ValueTypes.ATOMIC_BOOLEAN);
+        container.setDefaultValue(new AtomicBoolean(false));
         ParseableOption o = factory.createOption(OptionTypes.SHORT, "99", container);
         assertTrue(o instanceof NumericalOption);
     }

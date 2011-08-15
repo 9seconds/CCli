@@ -224,7 +224,7 @@ abstract public class AbstractOption
 
     protected boolean
     isDataValid () {
-        return name != null && name != "" && container != null;
+        return name != null && name != "" && container != null && container.isConsistent();
     } /* isDataValid */
 
 

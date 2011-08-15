@@ -36,7 +36,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.aerialsounds.ccli.CCli.CannotCreateOption;
 import org.aerialsounds.ccli.CCli.CannotParse;
-import org.aerialsounds.ccli.CCli.DataIsNotConsistent;
 import org.aerialsounds.ccli.CCli.HaveSuchOption;
 import org.aerialsounds.ccli.CCli.IncorrectParsingOfOption;
 import org.aerialsounds.ccli.CCli.NothingToParse;
@@ -142,40 +141,6 @@ public class CCliTests {
     }
 
 
-    @Test (expected = DataIsNotConsistent.class)
-    public void
-    inconsistentData () throws Throwable {
-        String[] args = {"-ni", "-i", "-z", "awesome"};
-
-        CCli rep = new CCli(args);
-        @SuppressWarnings ("unused") Option opt1 = rep.createOption(
-            OptionTypes.SHORT,
-            "n",
-            false,
-            ValueTypes.BOOLEAN,
-            "Stereo options");
-        @SuppressWarnings ("unused") Option opt2 = rep.createOption(
-            OptionTypes.SHORT,
-            "i",
-            false,
-            ValueTypes.BOOLEAN,
-            "Quality options");
-        @SuppressWarnings ("unused") Option opt3 = rep.createOption(
-            OptionTypes.SHORT,
-            "z",
-            10L,
-            ValueTypes.STRING,
-            "Stereo options");
-        try {
-            rep.parse();
-            fail();
-        }
-        catch ( CannotParse e ) {
-            throw e.getCause();
-        }
-    }
-
-
     @Test (expected = IncorrectParsingOfOption.class)
     public void
     incorrectParsingOfOption () throws Throwable {
@@ -197,7 +162,7 @@ public class CCliTests {
         @SuppressWarnings ("unused") Option opt3 = rep.createOption(
             OptionTypes.SHORT,
             "z",
-            "",
+            10,
             ValueTypes.INTEGER,
             "Stereo options");
         try {
@@ -310,7 +275,7 @@ public class CCliTests {
         @SuppressWarnings ("unused") Option opt3 = rep.createOption(
             OptionTypes.SHORT,
             "z",
-            10L,
+            "10L",
             ValueTypes.STRING,
             "Stereo options");
         try {

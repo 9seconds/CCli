@@ -30,6 +30,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.aerialsounds.ccli.CCli;
 import org.aerialsounds.ccli.OptionTypes;
 import org.aerialsounds.ccli.ValueTypes;
 import org.aerialsounds.ccli.datacontainer.DataContainer;
@@ -48,8 +49,10 @@ public class NumericalOptionTests {
 
     @Before
     public void setUp () {
-        container = new DataContainer(null);
+        container = new DataContainer(new CCli(null));
         container.setValueType(ValueTypes.BOOLEAN);
+        container.setDefaultValue(false);
+        container.setHelp("");
     }
 
 

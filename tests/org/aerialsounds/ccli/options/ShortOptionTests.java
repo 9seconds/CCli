@@ -50,7 +50,9 @@ public class ShortOptionTests {
     @Before
     public void setUp () {
         container = new DataContainer(new CCli(null));
+        container.setDefaultValue(10);
         container.setValueType(ValueTypes.INTEGER);
+        container.setHelp("");
     }
 
 
@@ -102,6 +104,7 @@ public class ShortOptionTests {
     @Test
     public void extractingInlineValues () {
         container.setValueType(ValueTypes.DOUBLE);
+        container.setDefaultValue(10.0d);
         ShortOption opt = new ShortOption(OptionTypes.SHORT, "v", container);
 
         assertNull(opt.extractInlineValue("-v"));

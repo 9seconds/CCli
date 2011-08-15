@@ -62,6 +62,11 @@ public class AbstractOptionsTests {
             super(optionType, name, container);
         }
 
+        @Override
+        protected boolean isDataValid () {
+            return name != null && name != "" && container != null;
+        }
+
     }
 
 
