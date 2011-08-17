@@ -298,8 +298,8 @@ public class CCli
 
 
     /**
-     * <p>This is simple wrapper of {@link Option#bind bind()} method of {@link Option}. You can use it if you like, following lines of
-     * code are equal:</p>
+     * <p>This is simple wrapper of {@link Option#bind bind()} method of {@link Option}. You can use it
+     * if you like, following lines of code are equal:</p>
      *
      * <pre><code>
      *     CCli.bind(one, another);
