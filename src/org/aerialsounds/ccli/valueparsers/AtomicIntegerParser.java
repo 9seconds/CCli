@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 by Sergey Arkhipov <serge@aerialsounds.org>
+ * Copyright (C) 2011 by Serge Arkhipov <serge@aerialsounds.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
