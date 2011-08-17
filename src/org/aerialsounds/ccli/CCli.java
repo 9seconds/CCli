@@ -968,7 +968,7 @@ public class CCli
 
 
     /**
-     * <p>This method should be used to interrupt {@link Option} creating</p>
+     * <p>This method should be used to interrupt {@link Option} creating.</p>
      *
      * @param cause - the cause of creating interruption.
      *
