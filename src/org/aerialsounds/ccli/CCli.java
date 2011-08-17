@@ -34,14 +34,13 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import static org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
-
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.optionobservable.Observable;
 import org.aerialsounds.ccli.optionobservable.Observer;
 import org.aerialsounds.ccli.options.AbstractOption;
 import org.aerialsounds.ccli.options.ParseableOption;
 import org.aerialsounds.ccli.options.ShortOption;
+import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 import org.aerialsounds.ccli.valueparsers.BooleanConverter;
 
 
@@ -307,7 +306,7 @@ public class CCli
      *     one.bind(another);
      * </code></pre>
      *
-     * @param one - one {@code Option} to bind
+     * @param one     - one {@code Option} to bind
      * @param another - another {@code Option} to bind
      *
      * @throws CannotBind if given options cannot bind one to another.
@@ -453,7 +452,7 @@ public class CCli
      *
      * <p>Creates {@code CCli} repository with given {@link CliHelpGenerator} instance.</p>
      *
-     * @param args - raw unparsed application arguments.
+     * @param args          - raw unparsed application arguments.
      * @param helpGenerator - generator of help instance.
      *
      * @since 1.0
@@ -480,6 +479,33 @@ public class CCli
 
 
 
+    /**
+     * <p>This method should be used for creating new options. It can raise {@link CannotCreateOption}
+     * exception if repository cannot create such option. Please see references for detailed
+     * description of possible fault reasons.</p>
+     *
+     * @param type         - the type of option to be create
+     * @param name         - option name. Please note that you do not need to set explicit hyphen prefix
+     *                       for {@linkplain OptionTypes#SHORT short} and {@linkplain OptionTypes#LONG long}
+     *                       options.
+     * @param defaultValue - default value of this option. It is used if option value was not redefined
+     *                       during parsing.
+     * @param valueType    - type of value should be parsed.
+     * @param help         - description of option meaning.
+     *
+     * @return Created {@link Option} instance with given parameters.
+     *
+     * @throws CannotCreateOption if it is not possible to create option with given parameters.
+     *
+     * @see OptionTypes
+     * @see ValueTypes
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     final public Option
     createOption (
         final OptionTypes type,
@@ -491,7 +517,7 @@ public class CCli
         final DataContainer container = factory.createDataContainer(defaultValue, valueType, help);
         try {
             final ParseableOption opt = factory.createOption(type, name, container);
-            register(container, opt);
+            register(opt);
             return opt;
         }
         catch ( DataIsNotValid e ) {
@@ -505,6 +531,18 @@ public class CCli
     } /* createOption */
 
 
+    /**
+     * <p>This method should be used for removing {@link Option} instances from repository. After removing,
+     * you cannot get any values from existing object, you cannot bind it to other or doing something else.
+     * But you can create new option with such name if you want.</p>
+     *
+     * @param option - {@code Option} instance should be removed from repository.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public void
     remove (final Option option) {
         if ( option instanceof ParseableOption ) {
@@ -518,6 +556,33 @@ public class CCli
     } /* remove */
 
 
+    /**
+     * <p>This method should be used for parsing command line. Command line should be set when
+     * {@code CCli} repository was created. If parsing is OK, all created options obtained its values
+     * which may obtain using {@link Option#getValue getValue()} method.</p>
+     *
+     * <p>Note that each option will contain proper value after parsing. If option is not defined
+     * in command line, it will contain default value. Otherwise, it will contain redefined one.
+     * Please note also that command line may contain multiple values of option. In that case,
+     * last in line will be used, other will be dropped.</p>
+     *
+     * <p>Please note also if parsion was not ok, all obtained values will be lost and options will be
+     * signed as not defined. You can get define state with {@link Option#isParsed isParsed()} method.</p>
+     *
+     * <p>If you add new option after invokation of this method, it will be not parsed, but other will store
+     * their data. You need to re-invoke this method to refresh information. If you remove option after
+     * parsing, information of existing ones will be stored also and there is no need for refresh.</p>
+     *
+     * @throws CannotParse if parsing command line is errorous.
+     *
+     * @see Option
+     * @see CannotParse
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public void
     parse ()
     throws CannotParse {
@@ -567,24 +632,71 @@ public class CCli
     } /* parse */
 
 
+    /**
+     * <p>This method should be used to check that parsing is complete. It will be
+     * {@code false} if there was no any parsing activity before or user added new option
+     * after parsing.</p>
+     *
+     * @return {@code true} if repository is need to be parsed, {@code false} otherwise.
+     *
+     * @see CCli#parse parse()
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     final public boolean
     isParsed () {
         return parsed;
     } /* isParsed */
 
 
+    /**
+     * <p>This method should be used to obtain own application arguments such as file names or
+     * something else. Suppose such arguments as own command values of application.</p>
+     *
+     * <p>For example:</p>
+     *
+     * <pre><code>
+     *     java app.jar -z --quiet --compile=true mighty_source.c
+     * </code></pre>
+     *
+     * <p>{@code mighty_source.c} is supposed to be application argument.</p>
+     *
+     * @return {@code Iterator<String>} to collection of such arguments.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     final public Iterator<String>
     getApplicationArguments () {
         return appArguments.iterator();
     } /* getApplicationArguments */
 
 
+    /**
+     * <p>This method should be used for generating help for created options.</p>
+     *
+     * @return {@code String} help representation.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     final public String
     help () {
         return helpGenerator.generate(containers.values());
     } /* help */
 
 
+    /**
+     * {@inheritDoc}
+     *
+     */
     @Override
     public void
     update (final Observable initiator, final Object initiated) {
@@ -611,6 +723,22 @@ public class CCli
 
 
 
+    /**
+     * <p>This method should be used to get created
+     * {@link org.aerialsounds.ccli.options.ParseableOption ParseableOption} instance from repository
+     * with given full name</p>
+     *
+     * @param option - full name of {@code ParseableOption} to search.
+     *
+     * @return {@code ParseableOption} instance or {@code null} if option was not found.
+     *
+     * @see org.aerialsounds.ccli.options.ParseableOption ParseableOption
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     protected ParseableOption
     findOption (final String option) {
         final Iterator<ParseableOption> it = options.iterator();
@@ -624,69 +752,164 @@ public class CCli
     } /* findOption */
 
 
+    /**
+     * <p>This method trying to parse string with unknown option. If string is joined options string,
+     * it will be evaluate in such way.</p>
+     *
+     * <p>Example of joined options:</p>
+     *
+     * <pre><code>
+     *     java app.jar -zcv mighty_source.c
+     * </code></pre>
+     *
+     * <p>Let's assume that {@code "-zcv"} option is not created, but {@linkplain OptionTypes#SHORT short}
+     * {@linkplain ValueTypes#BOOLEAN boolean} (or {@linkplain ValueTypes#ATOMIC_BOOLEAN atomic boolean}) options
+     * {@code "-z"}, {@code "-c"} and {@code "-v"} is created. These options are called <em>joined options</em>
+     * and will be in the same way with following command line:</p>
+     *
+     * <pre><code>
+     *     java app.jar -z -c -v mighty_source.c
+     * </code></pre>
+     *
+     * <p>Please note that numerical options as {@code "-5"} cannot be joined because of possible
+     * misunderstandings.</p>
+     *
+     * @param current - string with unknown options.
+     *
+     * @return {@code true} if string can be parsed, {@code false} otherwise.
+     *
+     * @see ValueTypes
+     * @see OptionTypes
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     final protected boolean
     parseUnknownOption (final String current) {
         final Iterable<ParseableOption> joined = findJoinedOptions(current);
         if ( joined != null ) {
-            confimJoin(joined);
+            for ( ParseableOption opt : joined )
+                opt.setValue(opt.parse(BooleanConverter.TRUE));
             return true;
         }
+
         return false;
     } /* parseUnknownOption */
 
 
+    /**
+     * <p>This method should be used to obtain set of joined options.</p>
+     *
+     * <p>Example of joined options:</p>
+     *
+     * <pre><code>
+     *     java app.jar -zcv mighty_source.c
+     * </code></pre>
+     *
+     * <p>Let's assume that {@code "-zcv"} option is not created, but {@linkplain OptionTypes#SHORT short}
+     * {@linkplain ValueTypes#BOOLEAN boolean} (or {@linkplain ValueTypes#ATOMIC_BOOLEAN atomic boolean}) options
+     * {@code "-z"}, {@code "-c"} and {@code "-v"} is created. These options are called <em>joined options</em>
+     * and will be in the same way with following command line:</p>
+     *
+     * <pre><code>
+     *     java app.jar -z -c -v mighty_source.c
+     * </code></pre>
+     *
+     * <p>Please note that numerical options as {@code "-5"} cannot be joined because of possible
+     * misunderstandings.</p>
+     *
+     * @param current - suspected string with joined options.
+     *
+     * @return {@code Iterable} container with {@link org.aerialsounds.ccli.options.ParseableOption ParseableOptions}
+     *         or {@code null} if options was not found.
+     *
+     * @see org.aerialsounds.ccli.options.ParseableOption ParseableOption
+     * @see ValueTypes
+     * @see OptionTypes
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     protected Iterable<ParseableOption>
     findJoinedOptions (final String current) {
         final String prefix = OptionTypes.SHORT.getPrefix();
+        Collection<ParseableOption> list = null;
 
         if (
                !current.startsWith(OptionTypes.LONG.getPrefix())
             && current.startsWith(prefix)
             && !ShortOption.haveNumbers(current)
         ) {
-            final char[]                      currentLine = current.substring(prefix.length()).toCharArray();
-            final Collection<ParseableOption> list        = new LinkedList<ParseableOption>();
-
+            final char[] currentLine = current.substring(prefix.length()).toCharArray();
+            list = new LinkedList<ParseableOption>();
+            ParseableOption opt;
             for ( char currentChar : currentLine ) {
-                ParseableOption opt = findOption(prefix + Character.toString(currentChar));
+                opt = findOption(prefix + Character.toString(currentChar));
 
                 if ( opt != null && opt.getValueType().isBoolean() )
                     list.add(opt);
                 else
                     return null;
             }
+        }
 
-            return list;
-        } else
-            return null;
+        return list;
     } /* findJoinedOptions */
 
 
+    /**
+     * <p>This method should be used for registering
+     * {@link org.aerialsounds.ccli.options.ParseableOption ParseableOption} within repository.</p>
+     *
+     * @param opt - {@code ParseableOption} to be registered.
+     *
+     * @throws HaveSuchOption if repository already have registered option with such full name.
+     *
+     * @see org.aerialsounds.ccli.options.ParseableOption ParseableOption
+     * @see HaveSuchOption
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     protected void
-    register (final DataContainer container, final ParseableOption opt)
+    register (final ParseableOption opt)
     throws HaveSuchOption {
         final String name = opt.getFullName();
         for ( Option o : options )
             if ( name.equals(o.getFullName()) )
                 throw new HaveSuchOption();
 
-        registerContainer(container, opt);
+        final Set<AbstractOption> containerSet = new HashSet<AbstractOption>();
+        containerSet.add(opt);
+        containers.put(opt.getContainer(), containerSet);
+
         options.add(opt);
+
         parsed = false;
     } /* register */
 
 
-    final protected void
-    registerContainer (final DataContainer container, final AbstractOption opt) {
-        final Set<AbstractOption> containerSet = new HashSet<AbstractOption>();
-        containerSet.add(opt);
-        containers.put(container, containerSet);
-    } /* registerContainer */
-
-
+    /**
+     * <p>This method should be used for removing data container mapping with
+     * {@link org.aerialsounds.ccli.options.AbstractOption AbstractOption}. If there is no any other
+     * {@code AbstractOption} associated with container, it will remove from repository completely.</p>
+     *
+     * @param option - {@code AbstractOption} which mapping is need to be removed.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     final protected void
     removeContainer (final AbstractOption option) {
-        final DataContainer container                 = option.getContainer();
+        final DataContainer container = option.getContainer();
         final Collection<AbstractOption> containerSet = containers.get(container);
         if ( containerSet != null ) {
             containerSet.remove(option);
@@ -696,24 +919,20 @@ public class CCli
     } /* removeContainer */
 
 
-    final protected boolean
-    isContainersConsistent () {
-        for ( DataContainer container : containers.keySet() )
-            if ( !container.isConsistent() )
-                return false;
-
-        return true;
-    } /* isContainersConsistent */
-
-
+    /**
+     * <p>This method should be used to clear and drop all parsed data in repository.</p>
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     final protected void
     clearParsedData () {
-        appArguments.clear();
-
-        final Iterable<DataContainer> conainersSet = containers.keySet();
-        for ( DataContainer container : conainersSet )
+        for ( DataContainer container : containers.keySet() )
             container.dropDefined();
 
+        appArguments.clear();
         parsed = false;
     } /* clearParsedData */
 
@@ -725,25 +944,48 @@ public class CCli
 
 
 
+    /**
+     * <p>This method should be used to interrupt parsing and initialize cause. It will clear
+     * all parsed data as well.</p>
+     *
+     * @param cause - the cause of parsing interruption.
+     *
+     * @throws CannotParse such exception will be thrown during each invokation of this method.
+     *
+     * @see CCli#parse parse()
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     private void
-    confimJoin (final Iterable<ParseableOption> joined) {
-        for ( ParseableOption opt : joined )
-            opt.setValue(opt.parse(BooleanConverter.TRUE));
-    } /* confimJoin */
-
-
-    private void
-    interruptParsing (final RuntimeException cause)
+    interruptParsing (final Throwable cause)
     throws CannotParse {
         clearParsedData();
         throw (CannotParse) new CannotParse().initCause(cause);
     } /* interruptParsing */
 
 
+    /**
+     * <p>This method should be used to interrupt {@link Option} creating</p>
+     *
+     * @param cause - the cause of creating interruption.
+     *
+     * @throws CannotCreateOption such exception will be thrown during each invokation of this method.
+     *
+     * @see Option
+     * @see CCli#createOption createOption()
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     private void
-    interruptOptionCreating (final Throwable e)
+    interruptOptionCreating (final Throwable cause)
     throws CannotCreateOption {
-        throw (CannotCreateOption) new CannotCreateOption().initCause(e);
+        throw (CannotCreateOption) new CannotCreateOption().initCause(cause);
     } /* interruptOptionCreating */
 
 
