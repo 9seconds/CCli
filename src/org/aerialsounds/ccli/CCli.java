@@ -34,14 +34,16 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import static org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
+
 import org.aerialsounds.ccli.datacontainer.DataContainer;
 import org.aerialsounds.ccli.optionobservable.Observable;
 import org.aerialsounds.ccli.optionobservable.Observer;
 import org.aerialsounds.ccli.options.AbstractOption;
 import org.aerialsounds.ccli.options.ParseableOption;
 import org.aerialsounds.ccli.options.ShortOption;
-import org.aerialsounds.ccli.options.AbstractOption.DataIsNotValid;
 import org.aerialsounds.ccli.valueparsers.BooleanConverter;
+
 
 
 /**
