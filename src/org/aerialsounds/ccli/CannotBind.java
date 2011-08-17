@@ -26,7 +26,31 @@ package org.aerialsounds.ccli;
 
 
 
+/**
+ * <p>This exception is raised if one option cannot bind to another. There are several reasons
+ * for raising such exception:</p>
+ *
+ * <ol>
+ *     <li>Different {@linkplain ValueTypes value types} are defined for these options,</li>
+ *     <li>Different default values are defined for these options,</li>
+ *     <li>Different help strings are defined for these options,</li>
+ *     <li>Different value is set for these options (please mention that it is related only
+ *         to case when values were explicit defined),</li>
+ *     <li>Different {@code CCli} repositories are defined for these options.</li>
+ * </ol>
+ *
+ * <p>Note that difference in {@linkplain OptionTypes option types} and names is transparent.</p>
+ *
+ * @see ValueTypes
+ * @see OptionTypes
+ *
+ * @since 1.0
+ *
+ * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+ *
+ */
 public class CannotBind
     extends RuntimeException {
     private static final long serialVersionUID = 9035409865724452061L;
 } /* class CannotBind */
+
