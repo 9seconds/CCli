@@ -36,6 +36,20 @@ import org.aerialsounds.ccli.options.ShortOption;
 
 
 
+/**
+ * <p>This factory object is used by {@link CCli} repository to create {@link Option}-related
+ * objects.</p>
+ *
+ * @see CCli
+ * @see Option
+ * @see org.aerialsounds.ccli.options.AbstractOption AbstractOption
+ * @see org.aerialsounds.ccli.datacontainer.DataContainer DataContainer
+ *
+ * @since 1.0
+ *
+ * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+ *
+ */
 class CliFactory {
 
 
@@ -46,6 +60,14 @@ class CliFactory {
 
 
 
+    /**
+     * <p>This field is used to determine which repository is created current instance.</p>
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     private final CCli repository;
 
 
@@ -56,6 +78,16 @@ class CliFactory {
 
 
 
+    /**
+     * <p>Constructor.</p>
+     *
+     * @param repository - CCli instance which is creating this object
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public
     CliFactory (final CCli repository) {
         this.repository = repository;
@@ -69,6 +101,25 @@ class CliFactory {
 
 
 
+    /**
+     * <p>This method should be used to create
+     * {@link org.aerialsounds.ccli.datacontainer.DataContainer DataContainer} instances.</p>
+     *
+     * @param defaultValue - default value of {@link Option}
+     * @param valueType - the type of associated values
+     * @param help - help string for {@code Option}
+     *
+     * @return New instance of {@code DataContainer}.
+     *
+     * @see Option
+     * @see ValueTypes
+     * @see org.aerialsounds.ccli.datacontainer.DataContainer DataContainer
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public DataContainer
     createDataContainer (final Object defaultValue, final ValueTypes valueType, final String help) {
         final DataContainer container = new DataContainer(repository);
@@ -81,6 +132,30 @@ class CliFactory {
     } /* createDataContainer */
 
 
+    /**
+     * <p>This method should be used to create
+     * {@link org.aerialsounds.ccli.options.ParseableOption ParseableOption} instances.</p>
+     *
+     * @param type - type of {@link Option}
+     * @param name - short option name (e.g {@code "z"} in {@code "--z"} option)
+     * @param container - {@link org.aerialsounds.ccli.datacontainer.DataContainer DataContainer}
+     *                    for new {@code Option}.
+     *
+     * @return New instance of {@code ParseableOption}.
+     *
+     * @throws DataIsNotValid if option cannot be created with given parameters.
+     *
+     * @see Option
+     * @see org.aerialsounds.ccli.options.ParseableOption ParseableOption
+     * @see OptionTypes
+     * @see org.aerialsounds.ccli.datacontainer.DataContainer DataContainer
+     * @see DataIsNotValid
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public ParseableOption
     createOption (final OptionTypes type, final String name, final DataContainer container)
     throws DataIsNotValid {

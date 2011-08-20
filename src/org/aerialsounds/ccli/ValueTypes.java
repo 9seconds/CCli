@@ -50,6 +50,22 @@ import org.aerialsounds.ccli.valueparsers.ValueParser;
 
 
 
+/**
+ * <p>This enumeration represents different value types which can be parsed with {@link CCli} class.
+ * Each enumeration value encapsulates creating of parser for such types and some additional
+ * features.</p>
+ *
+ * <p>You should use this enumeration to define which type of values should be associated
+ * with {@link Option}.</p>
+ *
+ * @see CCli
+ * @see Option
+ *
+ * @since 1.0
+ *
+ * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+ *
+ */
 public enum ValueTypes {
 
 
@@ -60,20 +76,173 @@ public enum ValueTypes {
 
 
 
-    ATOMIC_BOOLEAN (AtomicBoolean.class),
-    ATOMIC_INTEGER (AtomicInteger.class),
-    ATOMIC_LONG    (AtomicLong.class),
-    BIG_DECIMAL    (BigDecimal.class),
-    BIG_INTEGER    (BigInteger.class),
-    BOOLEAN        (Boolean.class),
-    BYTE           (Byte.class),
-    CHAR           (Character.class),
-    DOUBLE         (Double.class),
-    FLOAT          (Float.class),
-    INTEGER        (Integer.class),
-    LONG           (Long.class),
-    SHORT          (Short.class),
-    STRING         (String.class);
+    /**
+     * <p>This value types should be used if {@link Option} associated with AtomicBoolean type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    ATOMIC_BOOLEAN(AtomicBoolean.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with AtomicInteger type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    ATOMIC_INTEGER(AtomicInteger.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with AtomicLong type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    ATOMIC_LONG(AtomicLong.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with BigDecimal type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    BIG_DECIMAL(BigDecimal.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with BigInteger type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    BIG_INTEGER(BigInteger.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with Boolean type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    BOOLEAN(Boolean.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with Byte type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    BYTE(Byte.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with Character type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    CHAR(Character.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with Double type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    DOUBLE(Double.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with Float type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    FLOAT(Float.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with Integer type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    INTEGER(Integer.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with Long type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    LONG(Long.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with Short type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    SHORT(Short.class),
+
+    /**
+     * <p>This value types should be used if {@link Option} associated with String type.</p>
+     *
+     * @see Option
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    STRING(String.class);
 
 
 
@@ -83,6 +252,14 @@ public enum ValueTypes {
 
 
 
+    /**
+     * <p>This field stores original class of associated type.</p>
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     private final Class<?> type;
 
 
@@ -93,6 +270,14 @@ public enum ValueTypes {
 
 
 
+    /**
+     * <p>This field stores original class of associated type.</p>
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     private ValueTypes (final Class<?> type) {
         this.type = type;
     }
@@ -105,6 +290,20 @@ public enum ValueTypes {
 
 
 
+    /**
+     * <p>This method should be used to create
+     * {@link org.aerialsounds.ccli.valueparsers.ValueParser ValueParser} which can parse string
+     * value into object of associated type.</p>
+     *
+     * @return {@code ValueParser} for associated type.
+     *
+     * @see org.aerialsounds.ccli.valueparsers.ValueParser ValueParser
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public ValueParser
     createParser () {
         switch ( this ) {
@@ -154,12 +353,35 @@ public enum ValueTypes {
     } /* createParser */
 
 
+    /**
+     * <p>This method should be check that given object is instance (or child) of
+     * associated type.</p>
+     *
+     * @param o - object which is need to be checked.
+     *
+     * @return {@code true} if instance, {@code false} otherwise.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     final public boolean
     isInstancedBy (final Object o) {
         return type.isInstance(o);
     } /* isInstancedBy */
 
 
+    /**
+     * <p>This method should be check associated type is atomic.</p>
+     *
+     * @return {@code true} if atomic, {@code false} otherwise.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public boolean
     isAtomic () {
         return (
@@ -170,6 +392,16 @@ public enum ValueTypes {
     } /* isAtomic */
 
 
+    /**
+     * <p>This method should be check associated type is boolean.</p>
+     *
+     * @return {@code true} if boolean, {@code false} otherwise.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public boolean
     isBoolean () {
         return (
@@ -179,6 +411,16 @@ public enum ValueTypes {
     } /* isBoolean */
 
 
+    /**
+     * <p>This method should be check associated type is float.</p>
+     *
+     * @return {@code true} if float, {@code false} otherwise.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public boolean
     isFloat () {
         return (
@@ -189,6 +431,16 @@ public enum ValueTypes {
     } /* isFloat */
 
 
+    /**
+     * <p>This method should be check associated type is integer.</p>
+     *
+     * @return {@code true} if integer, {@code false} otherwise.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public boolean
     isInt () {
         return (
@@ -203,12 +455,32 @@ public enum ValueTypes {
     } /* isInt */
 
 
+    /**
+     * <p>This method should be check associated type is numerical.</p>
+     *
+     * @return {@code true} if numerical, {@code false} otherwise.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public boolean
     isNumber () {
         return ( isInt() || isFloat() );
     } /* isNumber */
 
 
+    /**
+     * <p>This method should be check associated type is string.</p>
+     *
+     * @return {@code true} if string, {@code false} otherwise.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
     public boolean
     isString () {
         return (
