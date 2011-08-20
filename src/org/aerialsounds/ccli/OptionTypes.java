@@ -99,12 +99,35 @@ public enum OptionTypes {
 
 
 
-    /** Represents short options. */
-    SHORT  ("-"),
-    /** Represents long options. */
-    LONG   ("--"),
-    /** Represents custom options. */
-    CUSTOM ("");
+    /**
+     * Represents short options.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    SHORT("-"),
+
+    /**
+     * Represents long options.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    LONG("--"),
+
+    /**
+     * Represents custom options.
+     *
+     * @since 1.0
+     *
+     * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+     *
+     */
+    CUSTOM("");
 
 
 

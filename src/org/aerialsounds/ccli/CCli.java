@@ -212,6 +212,18 @@ public class CCli
 
         private static final long serialVersionUID = -7689966940656377554L;
 
+        /**
+         * <p>Constructor.</p>
+         *
+         * <p>Initializes exception with unexpected option.</p>
+         *
+         * @param option - unexpected option.
+         *
+         * @since 1.0
+         *
+         * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+         *
+         */
         public
         UnexpectedOption (final String currentArgument) {
             super(currentArgument);
@@ -284,6 +296,18 @@ public class CCli
 
         private static final long serialVersionUID = -7594488127011543528L;
 
+        /**
+         * <p>Constructor.</p>
+         *
+         * <p>Initializes exception with errorous option.</p>
+         *
+         * @param option - errorous option.
+         *
+         * @since 1.0
+         *
+         * @author Serge Arkhipov &lt;<a href="mailto:serge@aerialsounds.org">serge@aerialsounds.org</a>&gt;
+         *
+         */
         public
         IncorrectParsingOfOption (final String option) {
             super(option);
@@ -321,7 +345,8 @@ public class CCli
      *
      */
     static public void
-    bind (final Option one, final Option another) throws CannotBind {
+    bind (final Option one, final Option another)
+    throws CannotBind {
         one.bind(another);
     } /* bind */
 
